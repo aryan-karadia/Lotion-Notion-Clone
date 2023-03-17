@@ -7,7 +7,7 @@ table = dynamodb.Table('notes')
 def lambda_handler(event, context):
     body = json.load(event['body'])
     try:
-        table.get_item(Item=body)
+        table.get_item(item=body)
         return {
             'statusCode': 200,
             'body': json.dumps({

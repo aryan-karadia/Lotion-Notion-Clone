@@ -189,7 +189,7 @@ output "get-lambda_url" {
 
 # read the docs: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table
 resource "aws_dynamodb_table" "Notes" {
-  name         = "notes-30148859"
+  name         = "lotion-30148859"
   billing_mode = "PROVISIONED"
 
   # up to 8KB read per second (eventually consistent)
