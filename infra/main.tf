@@ -1,3 +1,6 @@
+### TODO ###
+## Adding lambda permissions for dynamodb ##
+
 terraform {
   required_providers {
     aws = {
