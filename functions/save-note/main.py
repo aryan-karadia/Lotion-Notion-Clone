@@ -6,8 +6,11 @@ table = dynamodb.Table('notes')
 
 def lambda_handler(event, context):
     body = json.load(event['body'])
+    email = body['email']
+    id = body['id']
+    access_token = event['headers']['Authorization']
     try:
-        table.put_item(Item=body)
+        table.put_item(Item={'email': email, 'id': id, 'access_token': access_token})
         return {
             'statusCode': 200,
             'body': json.dumps({

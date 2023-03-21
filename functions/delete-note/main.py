@@ -6,8 +6,10 @@ table = dynamodb.Table('notes')
 
 def lambda_handler(event, context):
     body = json.loads(event['body'])
+    email = body['email']
+    id = body['id']
     try:
-        table.delete_item(Key=body)
+        table.delete_item(Key={'email': email, 'id': id})
         return {
             'statusCode': 200,
             'body': json.dumps({

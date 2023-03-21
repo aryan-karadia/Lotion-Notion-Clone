@@ -99,7 +99,7 @@ resource "aws_lambda_function" "delete-lambda" {
 }
 
 
-resource "aws_lambda_function_url" "delete-url" {
+resource "aws_lambda_function_url" "delete-note-30140288" {
   function_name      = aws_lambda_function.delete-lambda.function_name
   authorization_type = "NONE"
 
@@ -112,7 +112,7 @@ resource "aws_lambda_function_url" "delete-url" {
   }
 }
 
-output "delete-lambda_url" {
+output "delete-note-30140288-url" {
   value = aws_lambda_function_url.delete-url.function_url
 }
 
@@ -124,7 +124,7 @@ data "archive_file" "save-lambda" {
   output_path = "../functions/save-note/artifact.zip"
 }
 
-resource "aws_lambda_function" "save-lambda" {
+resource "aws_lambda_function" "save-note-30140288" {
 
   role             = aws_iam_role.lambda.arn
   function_name    = local.save_function_name
@@ -136,8 +136,8 @@ resource "aws_lambda_function" "save-lambda" {
 }
 
 resource "aws_lambda_function_url" "save-url" {
-  function_name      = aws_lambda_function.save-lambda.function_name
-  authorization_type = "NONE"
+    function_name = aws_lambda_function.save-lambda.function_name
+    authorization_type = "NONE"
 
   cors {
     allow_credentials = true
@@ -160,7 +160,7 @@ data "archive_file" "get-lambda" {
   output_path = "../functions/get-notes/artifact.zip"
 }
 
-resource "aws_lambda_function" "get-lambda" {
+resource "aws_lambda_function" "get-notes-30140288" {
 
   role             = aws_iam_role.lambda.arn
   function_name    = local.get_function_name
@@ -172,8 +172,8 @@ resource "aws_lambda_function" "get-lambda" {
 }
 
 resource "aws_lambda_function_url" "get-url" {
-  function_name      = aws_lambda_function.get-lambda.function_name
-  authorization_type = "NONE"
+    function_name = aws_lambda_function.get-lambda.function_name
+    authorization_type = "NONE"
 
   cors {
     allow_credentials = true
@@ -190,7 +190,7 @@ output "get-lambda_url" {
 
 # read the docs: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table
 resource "aws_dynamodb_table" "notes" {
-  name         = "notes-30148859"
+  name         = "lotion-30148859"
   billing_mode = "PROVISIONED"
 
   # up to 8KB read per second (eventually consistent)
