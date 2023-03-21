@@ -87,7 +87,7 @@ data "archive_file" "delete-lambda" {
   output_path = "../functions/delete-note/artifact.zip"
 }
 
-resource "aws_lambda_function" "delete-lambda" {
+resource "aws_lambda_function" "delete-note-30140288" {
 
   role             = aws_iam_role.lambda.arn
   function_name    = local.delete_function_name
@@ -99,8 +99,8 @@ resource "aws_lambda_function" "delete-lambda" {
 }
 
 
-resource "aws_lambda_function_url" "delete-note-30140288" {
-  function_name      = aws_lambda_function.delete-lambda.function_name
+resource "aws_lambda_function_url" "delete-url" {
+  function_name      = aws_lambda_function.delete-note-30140288.function_name
   authorization_type = "NONE"
 
   cors {
@@ -136,8 +136,8 @@ resource "aws_lambda_function" "save-note-30140288" {
 }
 
 resource "aws_lambda_function_url" "save-url" {
-    function_name = aws_lambda_function.save-lambda.function_name
-    authorization_type = "NONE"
+  function_name      = aws_lambda_function.save-note-30140288.function_name
+  authorization_type = "NONE"
 
   cors {
     allow_credentials = true
@@ -172,8 +172,8 @@ resource "aws_lambda_function" "get-notes-30140288" {
 }
 
 resource "aws_lambda_function_url" "get-url" {
-    function_name = aws_lambda_function.get-lambda.function_name
-    authorization_type = "NONE"
+  function_name      = aws_lambda_function.get-notes-30140288.function_name
+  authorization_type = "NONE"
 
   cors {
     allow_credentials = true
