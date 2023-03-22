@@ -1,16 +1,18 @@
 import boto3
 import json
-
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('notes')
+from boto3.dynamodb.conditions import Key
 
 def lambda_handler(event, context):
-    body = json.load(event['body'])
     try:
-        table.get_item(item=body)
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('notes')
+        email = event['headers']['email']
+        response = table.query(KeyConditionExpression=Key('email').eq(email))
         return {
             'statusCode': 200,
             'body': json.dumps({
+                'notes': response['Items'],
+                'count': len(response['Items']),
             'message': 'get note success'
             })
         }
