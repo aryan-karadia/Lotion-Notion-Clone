@@ -6,8 +6,16 @@ table = dynamodb.Table('notes')
 
 def lambda_handler(event, context):
     body = json.loads(event['body'])
-    email = body['email']
+    email = event['headers']['email']
+    access_token = event['headers']['Authorization']
     id = body['id']
+    if not access_token:
+        return {
+            'statusCode': 401,
+            'body': json.dumps({
+            'message': 'Unauthorized'
+            })
+        }
     try:
         table.delete_item(Key={'email': email, 'id': id})
         return {

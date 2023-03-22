@@ -12,7 +12,15 @@ def lambda_handler(event, context):
     title = body['title']
     when = body['when']
     access_token = event['headers']['Authorization']
+    if not access_token:
+        return {
+            'statusCode': 401,
+            'body': json.dumps({
+            'message': 'Unauthorized'
+            })
+        }
     try:
+
         table.put_item(Item={'email': email, 'id': id, 'access_token': access_token, 'body': noteBody, 'title': title, 'when': when})
         return {
             'statusCode': 200,

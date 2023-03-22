@@ -7,7 +7,15 @@ def lambda_handler(event, context):
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('notes')
         email = event['headers']['email']
+        access_token = event['headers']['Authorization']
         response = table.query(KeyConditionExpression=Key('email').eq(email))
+        if not access_token:
+            return {
+                'statusCode': 401,
+                'body': json.dumps({
+                'message': 'Unauthorized'
+                })
+            }
         return {
             'statusCode': 200,
             'body': json.dumps({
