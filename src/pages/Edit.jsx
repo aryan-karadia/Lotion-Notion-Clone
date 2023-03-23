@@ -84,6 +84,8 @@ const Edit = () => {
 
     const save = () => {
         // save-lambda_url = "https://xlu5q7yrj2exmudj5bl62kslh40gxswl.lambda-url.ca-central-1.on.aws/"
+        // email and access token in headers
+        // body = {id: id, Title: note.Title, Content: note.Content, when: note.when}
         console.log(note.Title);
         localStorage.setItem(`${id}`, JSON.stringify(note));
         console.log(note);
@@ -106,6 +108,8 @@ const Edit = () => {
 
     const deleteNote = (id) => {
         // delete-note-30140288-url = "https://47uo5uj4zfaqhrpe6bo64oc2c40zhvcg.lambda-url.ca-central-1.on.aws/"
+        // email and access token in headers
+        // body = {id: id}
         localStorage.removeItem(`${id}`);
         const curNote = document.querySelector(`#note-${id}`);
         curNote.remove();

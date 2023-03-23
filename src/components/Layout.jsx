@@ -16,6 +16,8 @@ const Layout = () => {
 
     useEffect(() => {
         /* get-lambda_url = "https://w4szm4zk4bjgyy6p7w2kozqlkq0iikrl.lambda-url.ca-central-1.on.aws/" */
+        // Sends email and access token in headers 
+        // query param is email
         if (localStorage.getItem(`${idnum}`) != null) {
         const noteTitles = document.querySelector("#note-titles");
         for(let i = 1; i < idnum; i++) {
