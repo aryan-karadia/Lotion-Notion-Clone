@@ -5,7 +5,6 @@ import Edit from './pages/Edit';
 import NoteView from './pages/NoteView';
 import { useState } from 'react';
 import Login from './pages/Login';
-import { GoogleLogin } from '@react-oauth/google';
 
 function App() {
 
@@ -17,7 +16,7 @@ function App() {
           <Routes>
             {!user ? (<Route path="*" element={<Login />} />)
             : (
-              <Route element={<Layout />}>
+              <Route element={<Layout />}>s
               <Route path="/" element={<Navigate to="/Notes"/>} />
               <Route path="Notes/:id/edit" element={<Edit />} />
               <Route path="/Notes" element={<Notes />} />
