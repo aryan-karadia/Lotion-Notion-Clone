@@ -289,6 +289,18 @@ header {
   place-self: center;
 }
 
+.login-button{
+  padding: 15px 20px;
+  border-color: gray;
+  border-radius: 10px;
+}
+
+.login-button:hover {
+  cursor: pointer;
+  background-color: var(--accent-col);
+  color: white;
+}
+
 .login-page {
   height: 100vh;
   display: flex;

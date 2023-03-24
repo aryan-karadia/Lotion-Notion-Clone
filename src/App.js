@@ -3,16 +3,20 @@ import Notes from './pages/Notes';
 import Layout from './components/Layout';
 import Edit from './pages/Edit';
 import NoteView from './pages/NoteView';
-import Login from './pages/Login';
 import React, { useState, useEffect } from 'react';
 import { googleLogout, useGoogleLogin, GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 function App() { 
-  const [email, setEmail] = useState("");
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
 
   useEffect(() => {
     if (user) {
@@ -25,22 +29,11 @@ function App() {
         })
         .then((res) => {
           setProfile(res.data);
-          setEmail(res.data.email);
           setIsLoggedIn(true);
         })
         .catch((err) => console.log(err));
     }
   }, [user]);
-
-  const responseMessage = (response) => {
-    setUser(response);
-    setIsLoggedIn(true);
-  };
-  
-
-  const errorMessage = (error) => {
-    console.log(error);
-  };
 
   const handleLogout = async () => {
     await googleLogout();
@@ -80,7 +73,7 @@ function App() {
           </header>
           <div id="login-body">
           <div className='login'>
-              <GoogleLogin onSuccess={responseMessage} onError={errorMessage}>Sign in to Lotion with Google</GoogleLogin>
+            <button onClick={() => login()} className="login-button">Sign in to Lotion with Google</button>
             </div>
           </div>
         </div>
