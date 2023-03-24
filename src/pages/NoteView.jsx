@@ -5,7 +5,9 @@ import 'react-quill/dist/quill.bubble.css';
 
 
 
-const NoteView = () => {
+const NoteView = (props) => {
+    const email = props.email;
+    const access_token = props.token;
     const navigate = useNavigate();
     const { id } = useParams();
     const [note, setNote] = useState({id: `${id}`, Title: "", Content: "", when: ""});

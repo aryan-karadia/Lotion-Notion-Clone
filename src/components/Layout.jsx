@@ -10,24 +10,38 @@ const Layout = (props) => {
     const [idnum, setIdnum] = useState(1);
     const {id} = useParams();
 
-    useEffect(() => {
-        /* get-lambda_url = "https://w4szm4zk4bjgyy6p7w2kozqlkq0iikrl.lambda-url.ca-central-1.on.aws/" */
-        // Sends email and access token in headers 
-        // query param is email
-        if (localStorage.getItem(`${idnum}`) != null) {
-        const noteTitles = document.querySelector("#note-titles");
-        for(let i = 1; i < idnum; i++) {
-            let newNote = document.createElement("div");
-            newNote.classList.add("note-title");
-            newNote.innerHTML = `<h2>${JSON.parse(localStorage.getItem(`${idnum}`)).Title}</h2><p>${JSON.parse(localStorage.getItem(`${idnum}`)).when}</p>`;
-            newNote.setAttributeNode(document.createAttribute("id"));
-            newNote.id = `note-${idnum}`;
-            newNote.onclick = () => {
-                navigateToNote(idnum);
-            };
-            noteTitles.appendChild(newNote);
-        }
-        }
+    useEffect( () => {
+        /* get-lambda_url = "https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/" */
+        // Sends email and access token in headers
+        const getNotes = async () => {
+            const email = props.email;
+            const access_token = props.token;
+            const res = await fetch("https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "email": email,
+                    'Access-token': access_token
+                }
+            });
+            const notes = await res.json();
+            console.log(notes);
+            if (notes.length > 0) {
+            const noteTitles = document.querySelector("#note-titles");
+            for(let i = 1; i < notes.length; i++) {
+                let newNote = document.createElement("div");
+                newNote.classList.add("note-title");
+                newNote.innerHTML = `<h2>${notes[i].Title}</h2><p>${notes[i].when}</p>`;
+                newNote.setAttributeNode(document.createAttribute("id"));
+                newNote.id = `note-${idnum}`;
+                newNote.onclick = () => {
+                    navigateToNote(idnum);
+                };
+                noteTitles.appendChild(newNote);
+                }
+            }
+    }
+    getNotes();
     }, [idnum]);
 
     const navigateToNote = (idnum) => {

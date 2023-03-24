@@ -8,7 +8,7 @@ table = dynamodb.Table('lotion-30148859')
 def lambda_handler(event, context):
     try:
         email = event['headers']['email']
-        access_token = event['headers']['Authorization']
+        access_token = event['headers']['Access-token']
         response = table.query(KeyConditionExpression=Key('email').eq(email))
         if not access_token:
             return {

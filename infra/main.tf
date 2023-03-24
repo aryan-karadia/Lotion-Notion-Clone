@@ -59,11 +59,14 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
   "Version": "2012-10-17",
   "Statement": [
     {
+
       "Action": [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
-        "dyanmodb:*"
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:DeleteItem"
       ],
       "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.notes.arn}"],
       "Effect": "Allow"

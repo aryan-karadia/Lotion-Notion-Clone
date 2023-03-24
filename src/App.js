@@ -54,13 +54,23 @@ function App() {
                 element={<Layout email={profile.email} logout={handleLogout} />}
               >
                 <Route path="/" element={<Navigate to="/Notes" />} />
-                <Route path="Notes/:id/edit" element={<Edit />} />
+                <Route
+                  path="Notes/:id/edit"
+                  element={
+                    <Edit email={profile.email} token={user.access_token} />
+                  }
+                />
                 <Route path="/Notes" element={<Notes />} />
                 <Route
                   path="Notes/:id/edit/:id"
                   element={<Navigate to="/Notes/:id" />}
                 />
-                <Route path="Notes/:id" element={<NoteView />} />
+                <Route
+                  path="Notes/:id"
+                  element={
+                    <NoteView email={profile.email} token={user.access_token} />
+                  }
+                />
               </Route>
             </Routes>
           </BrowserRouter>
@@ -78,7 +88,7 @@ function App() {
           <div id="login-body">
             <div className="login">
               <button onClick={() => login()} className="login-button">
-                Sign in to Lotion with {" "}
+                Sign in to Lotion with{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="11"

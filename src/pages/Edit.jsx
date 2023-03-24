@@ -3,7 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const Edit = () => {
+const Edit = (props) => {
+    const email = props.email;
+    const access_token = props.token;
     const { id } = useParams();
     const options = {
         year: "numeric",
@@ -44,7 +46,6 @@ const Edit = () => {
 
     useEffect( 
         () => {
-            // 
             const curNote = JSON.parse(localStorage.getItem(`${id}`));
             curNote ? setTitle(`${curNote.Title}`) : setTitle("Untitled");
             if (curNote) {
@@ -82,13 +83,21 @@ const Edit = () => {
     };
 
 
-    const save = () => {
-        // save-lambda_url = "https://xlu5q7yrj2exmudj5bl62kslh40gxswl.lambda-url.ca-central-1.on.aws/"
+    const save = async () => {
+        // save-lambda_url = "https://oxvt53qsm3qxtxctk3qo5rmed40efknj.lambda-url.ca-central-1.on.aws/"
         // email and access token in headers
         // body = {id: id, Title: note.Title, Content: note.Content, when: note.when}
-        console.log(note.Title);
-        localStorage.setItem(`${id}`, JSON.stringify(note));
         console.log(note);
+        const res = await fetch("https://oxvt53qsm3qxtxctk3qo5rmed40efknj.lambda-url.ca-central-1.on.aws/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "email": JSON.stringify(email),
+                'Access-token': JSON.stringify(access_token)
+            },
+            body: JSON.stringify({...note, email: email}),
+        });
+        console.log("saved");
         const noteTitle = document.querySelector(`#note-${id}`);
         let preview = note.Content;
         if (preview.length > 50) {
@@ -107,7 +116,7 @@ const Edit = () => {
     }
 
     const deleteNote = (id) => {
-        // delete-note-30140288-url = "https://47uo5uj4zfaqhrpe6bo64oc2c40zhvcg.lambda-url.ca-central-1.on.aws/"
+        // delete-note-30140288-url = "https://4hzre52ywo56kfhpjxgtfggjpq0zfkln.lambda-url.ca-central-1.on.aws/"
         // email and access token in headers
         // body = {id: id}
         localStorage.removeItem(`${id}`);
