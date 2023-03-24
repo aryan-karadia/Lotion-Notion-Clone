@@ -78,11 +78,11 @@ function App() {
           <div id="login-body">
             <div className="login">
               <button onClick={() => login()} className="login-button">
-                Sign in to Lotion with Google{" "}
+                Sign in to Lotion with {" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
+                  width="11"
+                  height="11"
                   fill="currentColor"
                   class="bi bi-google"
                   viewBox="0 0 16 16"
