@@ -34,33 +34,48 @@ function App() {
 
   const responseMessage = (response) => {
     setUser(response);
+    setIsLoggedIn(true);
   };
+  
 
   const errorMessage = (error) => {
     console.log(error);
   };
 
+  const handleLogout = () => {
+    googleLogout()
+      .then(() => {
+        setUser(null);
+        setIsLoggedIn(false);
+      })
+      .catch((error) => console.log(error));
+  };
+  
   return (
     <>
-      {!isLoggedIn ? (        
+      {isLoggedIn ? (   
+        <div>
+          <button onClick={handleLogout}>Logout</button>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Navigate to="/Notes"/>} />
+                <Route path="Notes/:id/edit" element={<Edit />} />
+                <Route path="/Notes" element={<Notes />} />
+                <Route path="Notes/:id/edit/:id" element={<Navigate to="/Notes/:id" />} />
+                <Route path="Notes/:id" element={<NoteView />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </div>
+
+      ) : (
         <div>
           <h2>React Google Login</h2>
           <br />
           <br />
           <GoogleLogin onSuccess={responseMessage} onError={errorMessage}>Sign in to Lotion with Google</GoogleLogin>
         </div>
-      ) : (
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/Notes"/>} />
-              <Route path="Notes/:id/edit" element={<Edit />} />
-              <Route path="/Notes" element={<Notes />} />
-              <Route path="Notes/:id/edit/:id" element={<Navigate to="/Notes/:id" />} />
-              <Route path="Notes/:id" element={<NoteView />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
       )}
     </>
   );
