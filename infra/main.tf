@@ -66,7 +66,8 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
         "logs:PutLogEvents",
         "dynamodb:PutItem",
         "dynamodb:GetItem",
-        "dynamodb:DeleteItem"
+        "dynamodb:DeleteItem",
+        "dynamodb:Query"
       ],
       "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.notes.arn}"],
       "Effect": "Allow"
