@@ -81,10 +81,10 @@ const NoteView = (props) => {
             body: JSON.stringify({
                 id: id
             })
-        }).then((res) => {
-            console.log(res);
-            navigate("/Notes");
         });
+        const response = await res.json();
+        console.log(response);
+        navigate("/Notes");
     }
 
     return (
