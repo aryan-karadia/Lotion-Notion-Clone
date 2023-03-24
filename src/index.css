@@ -61,7 +61,7 @@ header div {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
+  width: 25px;
   margin-left: 25px;
   font-weight: 900;
   cursor: pointer;
@@ -73,7 +73,7 @@ header div {
 }
 
 .filler {
-  width: 47px;
+  width: 72px;
 }
 
 .side-menu {
@@ -298,15 +298,16 @@ header div {
 }
 
 .login-button{
-  padding: 15px 20px;
-  border-color: gray;
-  border-radius: 10px;
+  padding: 20px 40px;
+  border-color: white;
+  border-radius: 6px;
 }
 
 .login-button:hover {
   cursor: pointer;
   background-color: var(--accent-col);
   color: white;
+  border-color: var(--accent-col);
 }
 
 .login-page {
@@ -324,7 +325,6 @@ header div {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0 25px;
   color: var(--primary-color);
 }
 
