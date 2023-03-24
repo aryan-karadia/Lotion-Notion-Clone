@@ -1,4 +1,5 @@
 import { googleLogout } from "@react-oauth/google";
+import { delay } from "q";
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, useParams } from "react-router-dom";
 
@@ -25,6 +26,7 @@ const Layout = (props) => {
                 }
             });
             const notes = await res.json();
+            await delay(5000);
             console.log(notes);
             if (notes.length > 0) {
             const noteTitles = document.querySelector("#note-titles");
