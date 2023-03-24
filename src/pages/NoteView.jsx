@@ -3,8 +3,6 @@ import ReactQuill from "react-quill";
 import { useParams, useNavigate } from "react-router-dom";
 import 'react-quill/dist/quill.bubble.css';
 
-
-
 const NoteView = (props) => {
     const email = props.email;
     const access_token = props.token;
@@ -15,18 +13,22 @@ const NoteView = (props) => {
     
     useEffect(() => {
         const curNote = JSON.parse(localStorage.getItem(`${id}`));
-        setNote({...note, 
-            Title: curNote.Title,
-            Content: curNote.Content,
-            when: curNote.when
-        })
-        setContent(curNote.Content);
-        console.log(note);
-        console.log(content);
-        const curNoteTitle = document.querySelector(`#note-${id}`);
-        console.log(id);
-        curNoteTitle.classList.add("active");
-        }, []);
+        if (curNote) {
+            setNote({...note, 
+                Title: curNote.Title,
+                Content: curNote.Content,
+                when: curNote.when
+            })
+            setContent(curNote.Content);
+            console.log(note);
+            console.log(content);
+            const curNoteTitle = document.querySelector(`#note-${id}`);
+            console.log(id);
+            curNoteTitle.classList.add("active");
+        } else {
+            navigate("/Notes");
+        }
+    }, []);
 
     const navigateToNote = (idnum) => {
         const prevNote = document.querySelector(".active");
@@ -41,12 +43,16 @@ const NoteView = (props) => {
     useEffect( () => {
         navigateToNote(id);
         const curNote = JSON.parse(localStorage.getItem(`${id}`));
-        setNote({...note, 
-            Title: curNote.Title,
-            Content: curNote.Content,
-            when: curNote.when
-        })
-        setContent(curNote.Content);
+        if (curNote) {
+            setNote({...note, 
+                Title: curNote.Title,
+                Content: curNote.Content,
+                when: curNote.when
+            })
+            setContent(curNote.Content);
+        } else {
+            navigate("/Notes");
+        }
     }, [id]);
 
     const editNote = () => {
@@ -56,7 +62,7 @@ const NoteView = (props) => {
     const Del = () => {
         const answer = window.confirm("Are you sure?");
         if (answer) {
-        deleteNote(id);
+            deleteNote(id);
         }
     }
 
@@ -69,24 +75,23 @@ const NoteView = (props) => {
 
     return (
         <div id="body">
-        {note && (
-            <div>
-            <span id="note-header">
+            {note && (
                 <div>
-                    <h1 className="view-title">{note.Title}</h1>
-                    <p style={{color: "var(--secondary-color)"}} >{note.when}</p>
+                    <span id="note-header">
+                        <div>
+                            <h1 className="view-title">{note.Title}</h1>
+                            <p style={{color: "var(--secondary-color)"}} >{note.when}</p>
+                        </div>
+                        <span>
+                            <span className="save-btn" onClick={editNote}>Edit</span>
+                            <span className="del-btn" onClick={Del}>Delete</span>
+                        </span>
+                    </span>
+                    <ReactQuill className="editor" value={content} readOnly={true} theme={"bubble"} />
                 </div>
-                <span>
-                    <span className="save-btn" onClick={editNote}>Edit</span>
-                    <span className="del-btn" onClick={Del}>Delete</span>
-                </span>
-            </span>
-            <ReactQuill className="editor" value={content} readOnly={true} theme={"bubble"} />
-
-        </div>
-        )}
+            )}
         </div>
     );
-};
+}
 
 export default NoteView;
