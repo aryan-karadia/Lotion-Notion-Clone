@@ -8,10 +8,15 @@ import { googleLogout, useGoogleLogin, GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 function App() { 
-  const [email, setEmail] = useState("");
   const [user, setUser] = useState([]);
   const [profile, setProfile] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
 
   useEffect(() => {
     if (user) {
@@ -24,7 +29,6 @@ function App() {
         })
         .then((res) => {
           setProfile(res.data);
-          setEmail(res.data.email);
           setIsLoggedIn(true);
         })
         .catch((err) => console.log(err));
@@ -81,7 +85,7 @@ function App() {
           </header>
           <div id="login-body">
           <div className='login'>
-              <GoogleLogin onSuccess={responseMessage} onError={errorMessage}>Sign in to Lotion with Google</GoogleLogin>
+            <button onClick={() => login()}>Sign in to Lotion with 🚀 </button>
             </div>
           </div>
         </div>
