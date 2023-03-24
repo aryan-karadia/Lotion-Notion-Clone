@@ -85,7 +85,7 @@ function App() {
           </header>
           <div id="login-body">
           <div className='login'>
-            <button onClick={() => login()}>Sign in to Lotion with 🚀 </button>
+            <button onClick={() => login()} className="login-button">Sign in to Lotion with Google</button>
             </div>
           </div>
         </div>
