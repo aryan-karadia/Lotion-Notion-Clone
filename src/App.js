@@ -35,16 +35,6 @@ function App() {
     }
   }, [user]);
 
-  const responseMessage = (response) => {
-    setUser(response);
-    setIsLoggedIn(true);
-  };
-  
-
-  const errorMessage = (error) => {
-    console.log(error);
-  };
-
   const handleLogout = async () => {
     await googleLogout();
     setProfile(null);
