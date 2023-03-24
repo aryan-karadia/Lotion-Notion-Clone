@@ -42,14 +42,13 @@ function App() {
     console.log(error);
   };
 
-  const handleLogout = () => {
-    googleLogout()
-      .then(() => {
-        setUser(null);
-        setIsLoggedIn(false);
-      })
-      .catch((error) => console.log(error));
-  };
+  const handleLogout = async () => {
+    await googleLogout();
+    setProfile(null);
+    setIsLoggedIn(false);
+    console.log("Logged out");
+  }
+  
   
   return (
     <>
