@@ -12,8 +12,22 @@ const NoteView = (props) => {
     const [content, setContent] = useState("");
     
     useEffect(() => {
-        const curNote = JSON.parse(localStorage.getItem(`${id}`));
-        if (curNote) {
+        const getNotes = async () => {
+            const email = props.email;
+            const access_token = props.token;
+            const res = await fetch("https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "email": email,
+                    'Access-token': access_token
+                }
+            });
+            const notesArray = await res.json();
+            const notes = notesArray.notes;
+            const curNote = notes[id-1];
+            console.log(curNote);
+            if (curNote) {
             setNote({...note, 
                 Title: curNote.Title,
                 Content: curNote.Content,
@@ -23,11 +37,13 @@ const NoteView = (props) => {
             console.log(note);
             console.log(content);
             const curNoteTitle = document.querySelector(`#note-${id}`);
-            console.log(id);
             curNoteTitle.classList.add("active");
+            
         } else {
             navigate("/Notes");
         }
+        }
+        getNotes();
     }, []);
 
     const navigateToNote = (idnum) => {

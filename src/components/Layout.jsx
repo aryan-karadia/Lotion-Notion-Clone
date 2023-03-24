@@ -28,7 +28,7 @@ const Layout = (props) => {
             console.log(notes);
             if (notes.length > 0) {
             const noteTitles = document.querySelector("#note-titles");
-            for(let i = 1; i < notes.length; i++) {
+            for(let i = 0; i < notes.length; i++) {
                 let newNote = document.createElement("div");
                 newNote.classList.add("note-title");
                 newNote.innerHTML = `<h2>${notes[i].Title}</h2><p>${notes[i].when}</p>`;
