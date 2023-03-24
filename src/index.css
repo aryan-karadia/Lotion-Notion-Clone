@@ -28,7 +28,7 @@ header {
   justify-content: space-between;
   border-bottom: 1px solid;
   border-color: var(--accent-col);
-  height: 8vh;
+  min-height: 8vh;
 }
 
 .header-text {
@@ -36,7 +36,10 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
 
+header div {
+  align-self: center;
 }
 
 .header-text h1 {
@@ -62,6 +65,11 @@ header {
   margin-left: 25px;
   font-weight: 900;
   cursor: pointer;
+  padding: 0 25px;
+}
+
+.menu-toggle:hover {
+  background-color: var(--accent-col);
 }
 
 .filler {

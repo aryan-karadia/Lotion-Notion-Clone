@@ -2,7 +2,7 @@ import boto3
 import json
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('notes')
+table = dynamodb.Table('lotion-30148859')
 
 def lambda_handler(event, context):
     body = json.load(event['body'])
@@ -21,7 +21,7 @@ def lambda_handler(event, context):
         }
     try:
 
-        table.put_item(Item={'email': email, 'id': id, 'access_token': access_token, 'body': noteBody, 'title': title, 'when': when})
+        table.put_item(Item={'email': email, 'id': id, 'body': noteBody, 'title': title, 'when': when})
         return {
             'statusCode': 200,
             'body': json.dumps({
