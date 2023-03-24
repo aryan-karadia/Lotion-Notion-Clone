@@ -54,6 +54,8 @@ function App() {
     <>
       {isLoggedIn ? (   
         <div>
+         <button onClick={handleLogout}>Logout</button>
+         <p>Email Address: {profile.email}</p>
           <BrowserRouter>
             <Routes>
               <Route element={<Layout />}>
