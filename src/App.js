@@ -3,7 +3,6 @@ import Notes from './pages/Notes';
 import Layout from './components/Layout';
 import Edit from './pages/Edit';
 import NoteView from './pages/NoteView';
-import Login from './pages/Login';
 import React, { useState, useEffect } from 'react';
 import { googleLogout, useGoogleLogin, GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
