@@ -64,7 +64,6 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "dynamodb:PutItem",
-        "dynamodb:GetItem",
         "dynamodb:DeleteItem",
         "dynamodb:Query"
       ],
