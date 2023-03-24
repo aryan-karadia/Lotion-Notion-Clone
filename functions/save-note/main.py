@@ -6,9 +6,10 @@ table = dynamodb.Table('lotion-30148859')
 
 def lambda_handler(event, context):
     http_method = event["requestContext"]["http"]["method"]
+    print(event)
     if http_method == "POST":
         body = json.loads(event['body'])
-        access_token = event['headers']['Access-token']
+        access_token = event['headers']['access-token']
         if not access_token:
             return {
                 'statusCode': 401,
