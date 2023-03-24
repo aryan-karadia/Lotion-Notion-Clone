@@ -18,6 +18,15 @@ function App() {
   });
 
   useEffect(() => {
+    // Try to retrieve user information from local storage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (user) {
       axios
         .get(
@@ -32,6 +41,8 @@ function App() {
         .then((res) => {
           setProfile(res.data);
           setIsLoggedIn(true);
+          // Store user information in local storage
+          localStorage.setItem("user", JSON.stringify(user));
         })
         .catch((err) => console.log(err));
     }
@@ -39,10 +50,12 @@ function App() {
 
   const handleLogout = async () => {
     await googleLogout();
-    setProfile(null);
     setIsLoggedIn(false);
+    // Remove user information from local storage on logout
+    localStorage.removeItem("user");
     console.log("Logged out");
   };
+
 
   return (
     <>
