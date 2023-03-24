@@ -1,5 +1,4 @@
-### TODO ###
-## Adding lambda permissions for dynamodb ##
+
 
 terraform {
   required_providers {
@@ -110,7 +109,7 @@ resource "aws_lambda_function_url" "delete-url" {
   cors {
     allow_credentials = true
     allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_methods     = ["DELETE"]
     allow_headers     = ["*"]
     expose_headers    = ["keep-alive", "date"]
   }
@@ -146,7 +145,7 @@ resource "aws_lambda_function_url" "save-url" {
   cors {
     allow_credentials = true
     allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_methods     = ["POST"]
     allow_headers     = ["*"]
     expose_headers    = ["keep-alive", "date"]
   }
@@ -182,7 +181,7 @@ resource "aws_lambda_function_url" "get-url" {
   cors {
     allow_credentials = true
     allow_origins     = ["*"]
-    allow_methods     = ["GET", "POST", "PUT", "DELETE"]
+    allow_methods     = ["GET"]
     allow_headers     = ["*"]
     expose_headers    = ["keep-alive", "date"]
   }
