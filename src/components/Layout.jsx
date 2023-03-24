@@ -1,10 +1,11 @@
+import { googleLogout } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, useParams } from "react-router-dom";
 
 
 
 
-const Layout = () => {
+const Layout = (props) => {
     const navigate = useNavigate();
     const [idnum, setIdnum] = useState(1);
     const {id} = useParams();
@@ -84,7 +85,7 @@ const Layout = () => {
                     <h1>Lotion</h1>
                     <p>Like Notion, but worse.</p>
                 </div>
-                <span className="filler"></span>
+                <span className="logout-btn" onClick={props.logout}>{props.email} (Log out)</span>
             </header>
             <div id="content">
                 <div className="side-menu">

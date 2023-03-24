@@ -300,3 +300,17 @@ header {
   flex: 1 1 auto;
 }
 
+.logout-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 25px;
+  color: var(--primary-color);
+}
+
+.logout-btn:hover {
+  cursor: pointer;
+  background-color: var(--accent-col);
+  color: white;
+}
+

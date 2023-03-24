@@ -54,11 +54,9 @@ function App() {
     <>
       {isLoggedIn ? (   
         <div>
-         <button onClick={handleLogout}>Logout</button>
-         <p>Email Address: {profile.email}</p>
           <BrowserRouter>
             <Routes>
-              <Route element={<Layout />}>
+              <Route element={<Layout email={profile.email} logout={handleLogout} />}>
                 <Route path="/" element={<Navigate to="/Notes"/>} />
                 <Route path="Notes/:id/edit" element={<Edit />} />
                 <Route path="/Notes" element={<Notes />} />
