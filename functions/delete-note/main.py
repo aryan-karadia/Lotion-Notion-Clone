@@ -7,7 +7,7 @@ table = dynamodb.Table('lotion-30148859')
 def lambda_handler(event, context):
     body = json.loads(event['body'])
     email = event['headers']['email']
-    access_token = event['headers']['Authorization']
+    access_token = event['headers']['access-token']
     id = body['id']
     if not access_token:
         return {

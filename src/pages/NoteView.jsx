@@ -40,6 +40,7 @@ const NoteView = (props) => {
             curNoteTitle.classList.add("active");
             
         } else {
+            console.log("note not found")
             navigate("/Notes");
         }
         }
@@ -56,21 +57,6 @@ const NoteView = (props) => {
         navigate(`/Notes/${idnum}`);
     }
 
-    useEffect( () => {
-        navigateToNote(id);
-        const curNote = JSON.parse(localStorage.getItem(`${id}`));
-        if (curNote) {
-            setNote({...note, 
-                Title: curNote.Title,
-                Content: curNote.Content,
-                when: curNote.when
-            })
-            setContent(curNote.Content);
-        } else {
-            navigate("/Notes");
-        }
-    }, [id]);
-
     const editNote = () => {
         navigate(`/Notes/${id}/edit`);
     }
@@ -82,11 +68,23 @@ const NoteView = (props) => {
         }
     }
 
-    const deleteNote = (id) => {
-        localStorage.removeItem(`${id}`);
-        const curNote = document.querySelector(`#note-${id}`);
-        curNote.remove();
-        navigate("/Notes");
+    const deleteNote = async (id) => {
+        const email = props.email;
+        const access_token = props.token;
+        const res = await fetch("https://4hzre52ywo56kfhpjxgtfggjpq0zfkln.lambda-url.ca-central-1.on.aws/", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                'email': email,
+                'Access-token': access_token
+            },
+            body: JSON.stringify({
+                id: id
+            })
+        }).then((res) => {
+            console.log(res);
+            navigate("/Notes");
+        });
     }
 
     return (

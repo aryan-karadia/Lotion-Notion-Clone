@@ -119,7 +119,6 @@ const Edit = (props) => {
         // delete-note-30140288-url = "https://4hzre52ywo56kfhpjxgtfggjpq0zfkln.lambda-url.ca-central-1.on.aws/"
         // email and access token in headers
         // body = {id: id}
-        localStorage.removeItem(`${id}`);
         const curNote = document.querySelector(`#note-${id}`);
         curNote.remove();
         navigate("/Notes");
