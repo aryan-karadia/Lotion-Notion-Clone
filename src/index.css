@@ -284,3 +284,19 @@ header {
   background-color: var(--accent-col);
   color: var(--primary-color);
 }
+
+.login {
+  place-self: center;
+}
+
+.login-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#login-body {
+  display: grid;
+  flex: 1 1 auto;
+}
+

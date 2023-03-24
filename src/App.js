@@ -54,7 +54,6 @@ function App() {
     <>
       {isLoggedIn ? (   
         <div>
-          <button onClick={handleLogout}>Logout</button>
           <BrowserRouter>
             <Routes>
               <Route element={<Layout />}>
@@ -69,11 +68,21 @@ function App() {
         </div>
 
       ) : (
-        <div>
-          <h2>React Google Login</h2>
-          <br />
-          <br />
-          <GoogleLogin onSuccess={responseMessage} onError={errorMessage}>Sign in to Lotion with Google</GoogleLogin>
+        <div className='login-page'>
+          <header>
+                <span className="menu-toggle">&#9776;</span>
+                <div className="header-text">                
+                    <h1>Lotion</h1>
+                    <p>Like Notion, but worse.</p>
+                </div>
+                <span className="filler">
+                </span>
+          </header>
+          <div id="login-body">
+          <div className='login'>
+              <GoogleLogin onSuccess={responseMessage} onError={errorMessage}>Sign in to Lotion with Google</GoogleLogin>
+            </div>
+          </div>
         </div>
       )}
     </>
