@@ -1,10 +1,6 @@
-import { googleLogout } from "@react-oauth/google";
 import { delay } from "q";
 import { useEffect, useState } from "react";
-import { useNavigate, Outlet, useParams } from "react-router-dom";
-
-
-
+import { useNavigate, Outlet } from "react-router-dom";
 
 const Layout = (props) => {
     const navigate = useNavigate();
@@ -43,7 +39,7 @@ const Layout = (props) => {
             }
     }
     getNotes();
-    }, [idnum]);
+    },);
 
     const navigateToNote = (idnum) => {
         const prevNote = document.querySelector(".active");
