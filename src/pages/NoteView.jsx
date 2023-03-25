@@ -75,6 +75,8 @@ const NoteView = (props) => {
         const response = await res.json();
         console.log(response);
         id = id - 1;
+        const curNoteTitle = document.querySelector(`.active`);
+        curNoteTitle.remove();
         navigate("/Notes");
     }
 

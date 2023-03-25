@@ -9,7 +9,6 @@ import { useNavigate, Outlet, useParams } from "react-router-dom";
 const Layout = (props) => {
     const navigate = useNavigate();
     const [idnum, setIdnum] = useState(1);
-    const {id} = useParams();
 
     useEffect( () => {
         /* get-lambda_url = "https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/" */
