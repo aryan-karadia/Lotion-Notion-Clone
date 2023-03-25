@@ -7,7 +7,7 @@ const NoteView = (props) => {
     const email = props.email;
     const access_token = props.token;
     const navigate = useNavigate();
-    const { id } = useParams();
+    let { id } = useParams();
     const [note, setNote] = useState({id: `${id}`, Title: "", Content: "", when: ""});
     const [content, setContent] = useState("");
     
@@ -47,16 +47,6 @@ const NoteView = (props) => {
         getNotes();
     }, []);
 
-    const navigateToNote = (idnum) => {
-        const prevNote = document.querySelector(".active");
-        if (prevNote) {
-            prevNote.classList.remove("active");
-        }
-        const curNote = document.querySelector(`#note-${idnum}`);
-        curNote.classList.add("active");
-        navigate(`/Notes/${idnum}`);
-    }
-
     const editNote = () => {
         navigate(`/Notes/${id}/edit`);
     }
@@ -84,6 +74,9 @@ const NoteView = (props) => {
         });
         const response = await res.json();
         console.log(response);
+        id = id - 1;
+        const curNoteTitle = document.querySelector(`.active`);
+        curNoteTitle.remove();
         navigate("/Notes");
     }
 

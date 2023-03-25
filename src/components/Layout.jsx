@@ -1,4 +1,5 @@
 import { googleLogout } from "@react-oauth/google";
+import { delay } from "q";
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet, useParams } from "react-router-dom";
 
@@ -8,7 +9,6 @@ import { useNavigate, Outlet, useParams } from "react-router-dom";
 const Layout = (props) => {
     const navigate = useNavigate();
     const [idnum, setIdnum] = useState(1);
-    const {id} = useParams();
 
     useEffect( () => {
         /* get-lambda_url = "https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/" */
@@ -25,6 +25,7 @@ const Layout = (props) => {
                 }
             });
             const notes = await res.json();
+            await delay(5000);
             console.log(notes);
             if (notes.length > 0) {
             const noteTitles = document.querySelector("#note-titles");
