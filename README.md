@@ -14,9 +14,9 @@ The backend infrastructure is created and maintained using Terraform code.
 
 The 3 AWS Lambda functions are as follows:
 
-  - `get-notes-<your-ucid>`: to retrieve all the notes for a user. The function reads the user email from the query parameter `email`, and receives `email` and `access_token` (this is the token you get from the Google login library) in the headers. Function URL only allows `GET` requests
-  - `save-note-<your-ucid>`: to save/create/update a note for a user. The function reads the note to be saved/created/updated from the body of the request, and receives `email` and `access_token` in the headers. Function URL only allows `POST` requests
-  - `delete-note-<your-ucid>`: to delete an existing note for a user. The function reads the user email from the query parameter `email`, and receives `email` and `access_token` in the headers. Function URL only allows `DELETE` requests
+  - `get-notes`: to retrieve all the notes for a user. The function reads the user email from the query parameter `email`, and receives `email` and `access_token` (this is the token you get from the Google login library) in the headers. Function URL only allows `GET` requests
+  - `save-note`: to save/create/update a note for a user. The function reads the note to be saved/created/updated from the body of the request, and receives `email` and `access_token` in the headers. Function URL only allows `POST` requests
+  - `delete-note`: to delete an existing note for a user. The function reads the user email from the query parameter `email`, and receives `email` and `access_token` in the headers. Function URL only allows `DELETE` requests
 
 The DynamoDB table uses the email as a Partition Key and the note id as a Sort Key. This allows all notes to be stored without fail. 
 
