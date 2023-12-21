@@ -30,13 +30,13 @@ function App() {
     if (user) {
       axios
         .get(
-          `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&include_granted_scopes=true&response_type=token&redirect_uri=https://lotion-notion-clone.netlify.app&client_id=228095394015-uat8jdgidrbpfgqem7rs0p92bq320sa3.apps.googleusercontent.com`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.access_token}`,
-              Accept: "application/json",
-            },
-          }
+          `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&include_granted_scopes=true&response_type=token&redirect_uri=https://lotionv2.netlify.app&client_id=228095394015-jck5m1f8re24pkji0lsl493t7fg8ge6h.apps.googleusercontent.com`
+          // {
+          //   headers: {
+          //     Authorization: `Bearer ${user.access_token}`,
+          //     Accept: "application/json",
+          //   },
+          // }
         )
         .then((res) => {
           setProfile(res.data);
