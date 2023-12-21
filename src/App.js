@@ -30,9 +30,7 @@ function App() {
     if (user) {
       axios
         .get(
-          // `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
-          `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&include_granted_scopes=true&
-          response_type=token&redirect_uri=https://lotion-notion-clone.netlify.app&client_id=228095394015-uat8jdgidrbpfgqem7rs0p92bq320sa3.apps.googleusercontent.com`,
+          `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&include_granted_scopes=true&response_type=token&redirect_uri=https://lotion-notion-clone.netlify.app&client_id=228095394015-uat8jdgidrbpfgqem7rs0p92bq320sa3.apps.googleusercontent.com`,
           {
             headers: {
               Authorization: `Bearer ${user.access_token}`,
