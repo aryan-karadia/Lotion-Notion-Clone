@@ -4,7 +4,7 @@ This is a full stack application which uses React and AWS to create a Notion clo
 
 ## Front End
 
-The front end uses React and is hosted using Netlify, the link can be found [here](https://lotion-notion-clone.netlify.app) (lotion-notion-clone.netlify.app).
+The front end uses React and is hosted using Netlify, the link can be found [here](https://lotionv2.netlify.app)
 
 Google is also used as a login method for the app using `@react-oauth/google` library.
 
