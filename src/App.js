@@ -12,11 +12,6 @@ function App() {
   const [profile, setProfile] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const login = useGoogleLogin({
-    onSuccess: (codeResponse) => setUser(codeResponse),
-    onError: (error) => console.log("Login Failed:", error),
-  });
-
   useEffect(() => {
     // Try to retrieve user information from local storage
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -76,7 +71,6 @@ function App() {
       response_type: "token",
       scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
       include_granted_scopes: "true",
-      state: "pass-through value",
     };
 
     // Add form parameters as hidden input values.
