@@ -32,30 +32,29 @@ function App() {
   }, []);
 
   // use effect will only run if user is changed.
-  useEffect(() => {
-    if (user && user.access_token) {
-      axios
-        .get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
-          {
+  useEffect(
+    () => {
+      if (user) {
+        axios
+          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
             headers: {
               Authorization: `Bearer ${user.access_token}`,
-              Accept: "application/json",
-            },
-          },
-        )
-        .then((res) => {
-          setProfile(res.data);
-          // Store user information in local storage
-          localStorage.setItem("user", JSON.stringify(user));
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [user]);
+              Accept: 'application/json'
+            }
+          })
+          .then((res) => {
+            setProfile(res.data);
+          })
+          .catch((err) => console.log(err));
+      }
+    },
+    [user]
+  );
 
-  const handleLogout = async () => {
-    await googleLogout();
+  const handleLogout = () => {
+    googleLogout();
     setIsLoggedIn(false);
+    setProfile(null);
     // Remove user information from local storage on logout
     localStorage.removeItem("user");
     console.log("Logged out");
@@ -104,14 +103,14 @@ function App() {
           </header>
           <div id="login-body">
             <div className="login">
-              <button onClick={() => login()} className="login-button">
+              <button onClick={login} className="login-button">
                 Sign in to Lotion with{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="11"
                   height="11"
                   fill="currentColor"
-                  class="bi bi-google"
+                  className="bi bi-google"
                   viewBox="0 0 16 16"
                 >
                   <path
