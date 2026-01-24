@@ -1,12 +1,13 @@
 import { delay } from "q";
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
+import UserProfile from "./UserProfile";
 
 const Layout = (props) => {
     const navigate = useNavigate();
     const [idnum, setIdnum] = useState(1);
 
-    useEffect( () => {
+    useEffect(() => {
         /* get-lambda_url = "https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/" */
         // Sends email and access token in headers
         const getNotes = async () => {
@@ -24,22 +25,22 @@ const Layout = (props) => {
             await delay(5000);
             console.log(notes);
             if (notes.length > 0) {
-            const noteTitles = document.querySelector("#note-titles");
-            for(let i = 0; i < notes.length; i++) {
-                let newNote = document.createElement("div");
-                newNote.classList.add("note-title");
-                newNote.innerHTML = `<h2>${notes[i].Title}</h2><p>${notes[i].when}</p>`;
-                newNote.setAttributeNode(document.createAttribute("id"));
-                newNote.id = `note-${idnum}`;
-                newNote.onclick = () => {
-                    navigateToNote(idnum);
-                };
-                noteTitles.appendChild(newNote);
+                const noteTitles = document.querySelector("#note-titles");
+                for (let i = 0; i < notes.length; i++) {
+                    let newNote = document.createElement("div");
+                    newNote.classList.add("note-title");
+                    newNote.innerHTML = `<h2>${notes[i].Title}</h2><p>${notes[i].when}</p>`;
+                    newNote.setAttributeNode(document.createAttribute("id"));
+                    newNote.id = `note-${idnum}`;
+                    newNote.onclick = () => {
+                        navigateToNote(idnum);
+                    };
+                    noteTitles.appendChild(newNote);
                 }
             }
-    }
-    getNotes();
-    },);
+        }
+        getNotes();
+    }, []);
 
     const navigateToNote = (idnum) => {
         const prevNote = document.querySelector(".active");
@@ -51,7 +52,7 @@ const Layout = (props) => {
         navigate(`/Notes/${idnum}`);
     }
 
-    
+
     const newNote = () => {
         setIdnum(idnum + 1);
         const noteTitles = document.querySelector("#note-titles");
@@ -84,14 +85,14 @@ const Layout = (props) => {
     }
 
     return (
-        <>    
+        <>
             <header>
                 <span className="menu-toggle" onClick={toggleMenu}>&#9776;</span>
-                <div className="header-text">                
+                <div className="header-text">
                     <h1>Lotion</h1>
                     <p>Like Notion, but worse.</p>
                 </div>
-                <span className="logout-btn" onClick={props.logout}>{props.email} (Log out)</span>
+                <UserProfile email={props.email} handleLogout={props.logout} />
             </header>
             <div id="content">
                 <div className="side-menu">
@@ -100,10 +101,10 @@ const Layout = (props) => {
                         <span className="new-note" onClick={newNote}>&#43;</span>
                     </div>
                     <div id="note-titles">
-                        <p  className="temp" style={{color: "var(--secondary-color)"}}>No Notes Yet</p>
+                        <p className="temp" style={{ color: "var(--secondary-color)" }}>No Notes Yet</p>
                     </div>
                 </div>
-                <Outlet/>
+                <Outlet />
             </div>
         </>
     )

@@ -3,60 +3,67 @@ import Notes from "./pages/Notes";
 import Layout from "./components/Layout";
 import Edit from "./pages/Edit";
 import NoteView from "./pages/NoteView";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { useAppDispatch, useAppSelector } from "./stores/hooks";
+import { setUser, clearUser } from "./stores/UserSlice.ts";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState({});
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [accessToken, setAccessToken] = useState(null);
+
+  // Get user data from Redux store instead of local state
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
+  const isLoggedIn = user.email !== null;
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
-      setUser(codeResponse);
-      setIsLoggedIn(true);
+      setAccessToken(codeResponse.access_token);
+      // Store the access token separately since it's not in the user slice
+      sessionStorage.setItem("access_token", codeResponse.access_token);
     },
     onError: (error) => console.log("Login Failed:", error),
     scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
-    redirectUri: "https://lotionv2.netlify.app",
+    redirectUri: process.env.REACT_APP_REDIRECT_URI,
   });
 
+  // Load access token from session storage on mount
   useEffect(() => {
-    // Try to retrieve user information from local storage
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-      setIsLoggedIn(true);
+    const storedToken = sessionStorage.getItem("access_token");
+    if (storedToken) {
+      setAccessToken(storedToken);
     }
   }, []);
 
-  // use effect will only run if user is changed.
-  useEffect(
-    () => {
-      if (user) {
-        axios
-          .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-            headers: {
-              Authorization: `Bearer ${user.access_token}`,
-              Accept: 'application/json'
-            }
-          })
-          .then((res) => {
-            setProfile(res.data);
-          })
-          .catch((err) => console.log(err));
-      }
-    },
-    [user]
-  );
+  // Fetch user profile when access token is available
+  useEffect(() => {
+    if (accessToken) {
+      axios
+        .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: 'application/json'
+          }
+        })
+        .then((res) => {
+          // Dispatch to Redux store instead of setState
+          dispatch(setUser({
+            email: res.data.email,
+            name: res.data.name
+          }));
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [accessToken, dispatch]);
 
   const handleLogout = () => {
     googleLogout();
-    setIsLoggedIn(false);
-    setProfile(null);
-    // Remove user information from local storage on logout
-    localStorage.removeItem("user");
+    // Clear Redux store (this also clears sessionStorage via the reducer)
+    dispatch(clearUser());
+    // Clear access token
+    setAccessToken(null);
+    sessionStorage.removeItem("access_token");
     console.log("Logged out");
   };
 
@@ -67,13 +74,13 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route
-                element={<Layout email={profile.email} logout={handleLogout} />}
+                element={<Layout email={user.email} logout={handleLogout} />}
               >
                 <Route path="/" element={<Navigate to="/Notes" />} />
                 <Route
                   path="Notes/:id/edit"
                   element={
-                    <Edit email={profile.email} token={user.access_token} />
+                    <Edit email={user.email} token={accessToken} />
                   }
                 />
                 <Route path="/Notes" element={<Notes />} />
@@ -84,7 +91,7 @@ function App() {
                 <Route
                   path="Notes/:id"
                   element={
-                    <NoteView email={profile.email} token={user.access_token} />
+                    <NoteView email={user.email} token={accessToken} />
                   }
                 />
               </Route>
