@@ -8,9 +8,19 @@ import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
 function App() {
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
   const [profile, setProfile] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      setUser(codeResponse);
+      setIsLoggedIn(true);
+    },
+    onError: (error) => console.log("Login Failed:", error),
+    scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
+    redirectUri: "https://lotionv2.netlify.app",
+  });
 
   useEffect(() => {
     // Try to retrieve user information from local storage
@@ -21,21 +31,21 @@ function App() {
     }
   }, []);
 
+  // use effect will only run if user is changed.
   useEffect(() => {
-    if (user) {
+    if (user && user.access_token) {
       axios
         .get(
-          `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&include_granted_scopes=true&response_type=token&redirect_uri=https://lotionv2.netlify.app&client_id=228095394015-jck5m1f8re24pkji0lsl493t7fg8ge6h.apps.googleusercontent.com`
-          // {
-          //   headers: {
-          //     Authorization: `Bearer ${user.access_token}`,
-          //     Accept: "application/json",
-          //   },
-          // }
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          },
         )
         .then((res) => {
           setProfile(res.data);
-          setIsLoggedIn(true);
           // Store user information in local storage
           localStorage.setItem("user", JSON.stringify(user));
         })
@@ -50,42 +60,6 @@ function App() {
     localStorage.removeItem("user");
     console.log("Logged out");
   };
-
-  /*
-   * Create form to request access token from Google's OAuth 2.0 server.
-   */
-  function oauthSignIn() {
-    // Google's OAuth 2.0 endpoint for requesting an access token
-    var oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-
-    // Create <form> element to submit parameters to OAuth 2.0 endpoint.
-    var form = document.createElement("form");
-    form.setAttribute("method", "GET"); // Send as a GET request.
-    form.setAttribute("action", oauth2Endpoint);
-
-    // Parameters to pass to OAuth 2.0 endpoint.
-    var params = {
-      client_id:
-        "228095394015-jck5m1f8re24pkji0lsl493t7fg8ge6h.apps.googleusercontent.com",
-      redirect_uri: "https://lotionv2.netlify.app",
-      response_type: "token",
-      scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
-      include_granted_scopes: "true",
-    };
-
-    // Add form parameters as hidden input values.
-    for (var p in params) {
-      var input = document.createElement("input");
-      input.setAttribute("type", "hidden");
-      input.setAttribute("name", p);
-      input.setAttribute("value", params[p]);
-      form.appendChild(input);
-    }
-
-    // Add form to page and submit it to open the OAuth 2.0 endpoint.
-    document.body.appendChild(form);
-    form.submit();
-  }
 
   return (
     <>
@@ -130,7 +104,7 @@ function App() {
           </header>
           <div id="login-body">
             <div className="login">
-              <button onClick={() => oauthSignIn()} className="login-button">
+              <button onClick={() => login()} className="login-button">
                 Sign in to Lotion with{" "}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
