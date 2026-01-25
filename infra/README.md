@@ -1,1 +1,0 @@
-Put your Terraform configuration in the [`main.tf`](main.tf) file.

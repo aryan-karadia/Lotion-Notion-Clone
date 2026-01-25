@@ -1,5 +1,3 @@
-
-
 terraform {
   required_providers {
     aws = {
@@ -48,7 +46,7 @@ resource "aws_iam_role" "lambda" {
 EOF
 }
 
-# create a policy for logging
+# create a policy for logging and DynamoDB access (including rate limiting table)
 resource "aws_iam_policy" "logs_and_dynamodb" {
   name        = "lambda-logging-and-dynamodb"
   description = "IAM policy for logging from a lambda"
@@ -58,16 +56,21 @@ resource "aws_iam_policy" "logs_and_dynamodb" {
   "Version": "2012-10-17",
   "Statement": [
     {
-
       "Action": [
         "logs:CreateLogGroup",
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "dynamodb:PutItem",
         "dynamodb:DeleteItem",
-        "dynamodb:Query"
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem"
       ],
-      "Resource": ["arn:aws:logs:*:*:*", "${aws_dynamodb_table.notes.arn}"],
+      "Resource": [
+        "arn:aws:logs:*:*:*", 
+        "${aws_dynamodb_table.notes.arn}",
+        "${aws_dynamodb_table.rate_limits.arn}"
+      ],
       "Effect": "Allow"
     }
   ]
@@ -90,7 +93,6 @@ data "archive_file" "delete-lambda" {
 }
 
 resource "aws_lambda_function" "delete-note-30140288" {
-
   role             = aws_iam_role.lambda.arn
   function_name    = local.delete_function_name
   handler          = local.handler_name
@@ -98,8 +100,10 @@ resource "aws_lambda_function" "delete-note-30140288" {
   source_code_hash = data.archive_file.delete-lambda.output_base64sha256
 
   runtime = "python3.9"
+  
+  # Limit concurrent executions to prevent cost overruns
+  reserved_concurrent_executions = 10
 }
-
 
 resource "aws_lambda_function_url" "delete-url" {
   function_name      = aws_lambda_function.delete-note-30140288.function_name
@@ -127,7 +131,6 @@ data "archive_file" "save-lambda" {
 }
 
 resource "aws_lambda_function" "save-note-30140288" {
-
   role             = aws_iam_role.lambda.arn
   function_name    = local.save_function_name
   handler          = local.handler_name
@@ -135,6 +138,9 @@ resource "aws_lambda_function" "save-note-30140288" {
   source_code_hash = data.archive_file.save-lambda.output_base64sha256
 
   runtime = "python3.9"
+  
+  # Limit concurrent executions to prevent cost overruns
+  reserved_concurrent_executions = 10
 }
 
 resource "aws_lambda_function_url" "save-url" {
@@ -163,7 +169,6 @@ data "archive_file" "get-lambda" {
 }
 
 resource "aws_lambda_function" "get-notes-30140288" {
-
   role             = aws_iam_role.lambda.arn
   function_name    = local.get_function_name
   handler          = local.handler_name
@@ -171,6 +176,9 @@ resource "aws_lambda_function" "get-notes-30140288" {
   source_code_hash = data.archive_file.get-lambda.output_base64sha256
 
   runtime = "python3.9"
+  
+  # Limit concurrent executions to prevent cost overruns
+  reserved_concurrent_executions = 10
 }
 
 resource "aws_lambda_function_url" "get-url" {
@@ -190,7 +198,7 @@ output "get-lambda_url" {
   value = aws_lambda_function_url.get-url.function_url
 }
 
-# read the docs: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table
+# Main notes table
 resource "aws_dynamodb_table" "notes" {
   name         = "lotion-30148859"
   billing_mode = "PROVISIONED"
@@ -215,5 +223,32 @@ resource "aws_dynamodb_table" "notes" {
   attribute {
     name = "id"
     type = "S"
+  }
+}
+
+# Rate limiting table
+resource "aws_dynamodb_table" "rate_limits" {
+  name         = "lotion-rate-limits-30148859"
+  billing_mode = "PROVISIONED"
+
+  # Minimal capacity for rate limiting checks
+  read_capacity  = 1
+  write_capacity = 1
+
+  hash_key = "email"
+
+  attribute {
+    name = "email"
+    type = "S"
+  }
+
+  # Enable TTL to automatically delete old rate limit records
+  ttl {
+    attribute_name = "expiresAt"
+    enabled        = true
+  }
+
+  tags = {
+    Name = "lotion-rate-limits"
   }
 }
