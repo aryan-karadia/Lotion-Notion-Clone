@@ -1,20 +1,22 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Notes from "./pages/Notes";
-import Layout from "./components/Layout";
-import Edit from "./pages/Edit";
-import NoteView from "./pages/NoteView";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./stores/hooks";
 import { setUser, logoutUser } from "./stores/UserSlice.ts";
+import { ProtectedRoute, ProtectedNoteRoute } from "./routes/ProtectedRoutes";
+import Layout from "./components/Layout";
+import Notes from "./pages/Notes";
+import Edit from "./pages/Edit";
+import NoteView from "./pages/NoteView";
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
 
-  // Get user data from Redux store instead of local state
+  // Get user data and notes from Redux store
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user);
+  const notes = useAppSelector((state) => state.notes.notes);
   const isLoggedIn = user.email !== null;
 
   const login = useGoogleLogin({
@@ -67,34 +69,40 @@ function App() {
   return (
     <>
       {isLoggedIn ? (
-        <div>
-          <BrowserRouter>
-            <Routes>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              element={<Layout email={user.email} logout={handleLogout} token={accessToken} />}
+            >
+              <Route path="/" element={<Navigate to="/Notes" />} />
               <Route
-                element={<Layout email={user.email} logout={handleLogout} />}
-              >
-                <Route path="/" element={<Navigate to="/Notes" />} />
-                <Route
-                  path="Notes/:id/edit"
-                  element={
-                    <Edit email={user.email} token={accessToken} />
-                  }
-                />
-                <Route path="/Notes" element={<Notes />} />
-                <Route
-                  path="Notes/:id/edit/:id"
-                  element={<Navigate to="/Notes/:id" />}
-                />
-                <Route
-                  path="Notes/:id"
-                  element={
+                path="/Notes"
+                element={
+                  <ProtectedRoute isLoggedIn={isLoggedIn}>
+                    <Notes />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/Notes/:id"
+                element={
+                  <ProtectedNoteRoute isLoggedIn={isLoggedIn} notes={notes}>
                     <NoteView email={user.email} token={accessToken} />
-                  }
-                />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </div>
+                  </ProtectedNoteRoute>
+                }
+              />
+              <Route
+                path="/Notes/:id/edit"
+                element={
+                  <ProtectedNoteRoute isLoggedIn={isLoggedIn} notes={notes}>
+                    <Edit email={user.email} token={accessToken} />
+                  </ProtectedNoteRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/Notes" replace />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
       ) : (
         <div className="login-page">
           <header>
