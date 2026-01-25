@@ -4,12 +4,12 @@ body {
   font-family: 'Open Sans', sans-serif;
   --primary-color: #E5E4E2;
   --secondary-color: #818589;
-  --accent-col: #E5E4E2;
-  background-color: #121212;
   --accent-col: #36454F;
+  background-color: #121212;
   padding: 0;
   margin: 0;
   height: 100vh;
+  overflow: hidden;
 }
 
 a {
@@ -58,7 +58,8 @@ header div {
 
 .menu-toggle {
   font-size: 1.5rem;
-  display: flex;
+  display: none;
+  /* Hidden by default on desktop */
   align-items: center;
   justify-content: center;
   width: 25px;
@@ -66,6 +67,7 @@ header div {
   font-weight: 900;
   cursor: pointer;
   padding: 0 25px;
+  transition: background-color 0.3s ease;
 }
 
 .menu-toggle:hover {
@@ -83,6 +85,9 @@ header div {
   height: 100%;
   border-right: 1px solid;
   border-color: var(--accent-col);
+  background-color: #121212;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .side-header {
@@ -90,6 +95,7 @@ header div {
   justify-content: space-between;
   border-bottom: 1px solid;
   border-color: var(--accent-col);
+  flex-shrink: 0;
 }
 
 .side-header h1 {
@@ -109,6 +115,7 @@ header div {
   padding-right: 25px;
   padding-left: 25px;
   color: var(--primary-color);
+  transition: background-color 0.3s ease;
 }
 
 .new-note:hover {
@@ -125,6 +132,7 @@ header div {
   align-items: center;
   padding: 0;
   margin: 0;
+  overflow-y: auto;
 }
 
 #content {
@@ -133,6 +141,7 @@ header div {
   height: 91.5vh;
   padding: 0;
   margin: 0;
+  position: relative;
 }
 
 .notes {
@@ -140,17 +149,24 @@ header div {
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 0;
+  padding: 20px;
   margin: 0;
   color: var(--secondary-color);
+  text-align: center;
 }
 
+.notes h1 {
+  font-size: 1.5rem;
+}
 
 #body {
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #note-header {
@@ -161,7 +177,8 @@ header div {
   border-color: var(--accent-col);
   width: 100%;
   color: var(--primary-color);
-  height: 100px;
+  min-height: 100px;
+  flex-shrink: 0;
 }
 
 #note-header div {
@@ -202,6 +219,8 @@ header div {
   align-items: center;
   padding: 0 25px;
   color: var(--primary-color);
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
 }
 
 .save-btn:hover {
@@ -216,6 +235,8 @@ header div {
   align-items: center;
   padding: 0 25px;
   color: var(--primary-color);
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
 }
 
 .del-btn:hover {
@@ -226,7 +247,7 @@ header div {
 
 .editor {
   width: 100%;
-  height: 84%;
+  flex: 1;
   padding: 0;
   margin: 0;
   color: #E5E4E2;
@@ -245,6 +266,7 @@ header div {
   border: none;
   font-size: 1rem;
   width: 210px;
+  max-width: 100%;
 }
 
 .view-title {
@@ -256,7 +278,7 @@ header div {
 
 .note-title {
   font-weight: 900;
-  height: 100px;
+  min-height: 100px;
   width: 100%;
   text-decoration: none;
   background-color: inherit;
@@ -264,10 +286,11 @@ header div {
   border-style: none;
   color: var(--secondary-color);
   border-bottom: 1px solid var(--secondary-color);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .note-title:hover {
-  cursor: pointer;
   background-color: var(--accent-col);
   color: var(--primary-color);
 }
@@ -277,8 +300,9 @@ header div {
   padding: 0;
   margin-left: 15px;
   margin-top: 15px;
-  width: 100%;
+  width: calc(100% - 15px);
   font-size: 1.4rem;
+  word-wrap: break-word;
 }
 
 .note-title p {
@@ -302,10 +326,11 @@ header div {
   padding: 20px 40px;
   border-color: white;
   border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .login-button:hover {
-  cursor: pointer;
   background-color: var(--accent-col);
   color: white;
   border-color: var(--accent-col);
@@ -320,25 +345,6 @@ header div {
 #login-body {
   display: grid;
   flex: 1 1 auto;
-}
-
-.logout-btn {
-  padding: 10px 18px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-right: 25px;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .user-avatar {
@@ -401,4 +407,242 @@ header div {
 
 .logout-btn:hover {
   background-color: var(--accent-col);
+}
+
+/* Mobile overlay - appears behind sidebar on mobile */
+.mobile-overlay {
+  display: none;
+}
+
+/* ==================== MOBILE RESPONSIVE STYLES ==================== */
+
+/* Tablet and smaller screens */
+@media (max-width: 1024px) {
+  .side-menu {
+    width: 35%;
+  }
+
+  .header-text h1 {
+    font-size: 2rem;
+  }
+
+  .header-text p {
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+
+  /* Show hamburger menu on mobile */
+  .menu-toggle {
+    display: flex;
+  }
+
+  /* Hide filler on mobile */
+  .filler {
+    display: none;
+  }
+
+  /* Make sidebar full-width overlay on mobile */
+  .side-menu {
+    position: fixed;
+    left: 0;
+    top: 8vh;
+    width: 80%;
+    max-width: 300px;
+    height: calc(100vh - 8vh);
+    z-index: 1001;
+    transform: translateX(-100%);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Show sidebar when menu is open */
+  .side-menu.show {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when mobile menu is open */
+  .mobile-overlay {
+    display: block;
+    position: fixed;
+    top: 8vh;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  /* Reduce header title size */
+  .header-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-text p {
+    font-size: 0.7rem;
+  }
+
+  /* Make note header responsive */
+  #note-header {
+    min-height: 80px;
+  }
+
+  #note-header div {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  #note-header .title {
+    font-size: 1.3rem;
+    margin-top: 10px;
+  }
+
+  .view-title {
+    font-size: 1.3rem;
+    margin-top: 10px;
+  }
+
+  /* Adjust button sizes */
+  .save-btn,
+  .del-btn {
+    padding: 0 15px;
+    font-size: 0.9rem;
+  }
+
+  /* Make note titles more touch-friendly */
+  .note-title {
+    min-height: 90px;
+  }
+
+  .note-title h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Adjust user menu positioning */
+  .user-menu {
+    right: 10px;
+  }
+
+  /* Make notes page message smaller */
+  .notes h1 {
+    font-size: 1.2rem;
+    padding: 0 20px;
+  }
+
+  /* Ensure date input is responsive */
+  .date {
+    width: 100%;
+    max-width: 210px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .side-menu {
+    width: 85%;
+  }
+
+  .header-text h1 {
+    font-size: 1.2rem;
+  }
+
+  .header-text p {
+    font-size: 0.65rem;
+    margin-bottom: 5px;
+  }
+
+  .menu-toggle {
+    padding: 0 15px;
+    margin-left: 5px;
+  }
+
+  #note-header {
+    min-height: 70px;
+  }
+
+  #note-header div {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  #note-header .title {
+    font-size: 1.1rem;
+  }
+
+  .view-title {
+    font-size: 1.1rem;
+  }
+
+  .save-btn,
+  .del-btn {
+    padding: 0 12px;
+    font-size: 0.85rem;
+  }
+
+  .new-note {
+    font-size: 1.5rem;
+    padding: 0 15px;
+  }
+
+  .side-header h1 {
+    font-size: 1.2rem;
+    margin-left: 10px;
+  }
+
+  .note-title {
+    min-height: 80px;
+  }
+
+  .note-title h2 {
+    font-size: 1.1rem;
+    margin-left: 10px;
+  }
+
+  .note-title p {
+    margin-left: 10px;
+  }
+
+  .date {
+    font-size: 0.9rem;
+  }
+
+  .notes h1 {
+    font-size: 1rem;
+  }
+
+  .user-profile {
+    margin-right: 5px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  header {
+    min-height: 60px;
+  }
+
+  #content {
+    height: calc(100vh - 60px);
+  }
+
+  .side-menu {
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+
+  .mobile-overlay {
+    top: 60px;
+  }
+}
+
+/* Fix for Quill editor on mobile */
+@media (max-width: 768px) {
+  .ql-container {
+    font-size: 14px;
+  }
+
+  .ql-editor {
+    padding: 12px 15px;
+  }
 }

@@ -12,6 +12,7 @@ const Layout = (props) => {
     const loading = useAppSelector((state) => state.notes.loading);
     const [activeNoteId, setActiveNoteId] = useState(null);
     const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Fetch notes on component mount
     useEffect(() => {
@@ -31,6 +32,8 @@ const Layout = (props) => {
     const navigateToNote = (noteId) => {
         setActiveNoteId(noteId);
         navigate(`/Notes/${noteId}`);
+        // Close mobile menu when navigating to a note
+        setIsMobileMenuOpen(false);
     }
 
     const newNote = async () => {
@@ -39,15 +42,36 @@ const Layout = (props) => {
             const newNoteData = await dispatch(createNoteFrontend({ email: props.email })).unwrap();
             setActiveNoteId(newNoteData.id);
             navigate(`/Notes/${newNoteData.id}/edit`);
+            // Close mobile menu when creating a new note
+            setIsMobileMenuOpen(false);
         } catch (error) {
             console.error("Error creating new note:", error);
         }
     }
 
     const toggleMenu = () => {
-        const menu = document.querySelector(".side-menu");
-        menu.style.display === "none" ? menu.style.display = "flex" : menu.style.display = "none";
+        setIsMobileMenuOpen(!isMobileMenuOpen);
     }
+
+    // Close menu when clicking outside on mobile
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            const sidebar = document.querySelector(".side-menu");
+            const menuToggle = document.querySelector(".menu-toggle");
+
+            if (isMobileMenuOpen && sidebar && !sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        if (isMobileMenuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isMobileMenuOpen]);
 
     return (
         <>
@@ -66,7 +90,11 @@ const Layout = (props) => {
                     activeNoteId={activeNoteId}
                     onNavigateNote={navigateToNote}
                     onNewNote={newNote}
+                    isMobileMenuOpen={isMobileMenuOpen}
                 />
+                {/* Overlay for mobile menu */}
+                {isMobileMenuOpen && <div className="mobile-overlay" onClick={() => setIsMobileMenuOpen(false)}></div>}
+
                 {/* Only render child routes after initial load is complete */}
                 {initialLoadComplete ? (
                     <Outlet />

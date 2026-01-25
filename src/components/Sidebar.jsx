@@ -1,6 +1,6 @@
-const Sidebar = ({ notes, loading, activeNoteId, onNavigateNote, onNewNote }) => {
+const Sidebar = ({ notes, loading, activeNoteId, onNavigateNote, onNewNote, isMobileMenuOpen }) => {
     return (
-        <div className="side-menu">
+        <div className={`side-menu ${isMobileMenuOpen ? 'show' : ''}`}>
             <div className="side-header">
                 <h1>Notes</h1>
                 <span className="new-note" onClick={onNewNote}>&#43;</span>
