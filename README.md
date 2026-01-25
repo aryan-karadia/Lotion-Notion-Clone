@@ -5,6 +5,30 @@
 
 A modern, cloud-native note-taking application built with React and AWS serverless architecture. This full-stack SPA reimagines Notion with a streamlined interface, featuring OAuth 2.0 authentication, real-time state management with Redux, and infrastructure-as-code deployment.
 
+## Requesting Test Access
+
+This application uses Google OAuth for authentication. Due to Google's verification requirements, the app is currently in testing mode with limited access.
+
+### To Request Access:
+
+1. **Open an Issue**: [Create a new issue](https://github.com/YOUR_USERNAME/YOUR_REPO/issues/new) with the title "Request Test Access"
+2. **Provide Your Email**: Include the Google email address you want to use for testing
+3. **Purpose (Optional)**: Briefly mention why you're interested in testing (e.g., "Checking out your portfolio project")
+
+I'll add your email to the approved test users list within 24-48 hours and notify you when access is granted.
+
+**Note**: This is a portfolio/demo project. For a production-ready note-taking app, please use [Notion](https://notion.so) or similar established services.
+
+### Current Test Users
+Access is currently limited to approved testers. If you encounter an "Access blocked" error, please request access using the steps above.
+
+### For Recruiters/Employers
+If you're reviewing this project as part of a job application and would like to test the live demo, please either:
+- Request access using the method above, or
+- Review the source code and architecture documentation to understand the implementation
+
+
+
 ## Features
 
 - **Serverless Architecture**: Fully serverless backend leveraging AWS Lambda for scalable, cost-efficient operations
