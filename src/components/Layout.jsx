@@ -11,10 +11,21 @@ const Layout = (props) => {
     const notes = useAppSelector((state) => state.notes.notes);
     const loading = useAppSelector((state) => state.notes.loading);
     const [activeNoteId, setActiveNoteId] = useState(null);
+    const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
     // Fetch notes on component mount
     useEffect(() => {
-        dispatch(fetchNotes({ email: props.email, token: props.token }));
+        const loadNotes = async () => {
+            try {
+                await dispatch(fetchNotes({ email: props.email, token: props.token })).unwrap();
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+            } finally {
+                setInitialLoadComplete(true);
+            }
+        };
+
+        loadNotes();
     }, [dispatch, props.email, props.token]);
 
     const navigateToNote = (noteId) => {
@@ -56,7 +67,14 @@ const Layout = (props) => {
                     onNavigateNote={navigateToNote}
                     onNewNote={newNote}
                 />
-                <Outlet />
+                {/* Only render child routes after initial load is complete */}
+                {initialLoadComplete ? (
+                    <Outlet />
+                ) : (
+                    <div id="body">
+                        <div style={{ color: "var(--secondary-color)" }}>Loading notes...</div>
+                    </div>
+                )}
             </div>
         </>
     )

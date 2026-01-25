@@ -6,16 +6,15 @@ import NoteView from "../pages/NoteView";
 import { ProtectedRoute, ProtectedNoteRoute } from "./ProtectedRoutes";
 
 /**
- * Create application routes with authentication and note validation guards
+ * Create application routes with authentication guards
  * @param {Object} params - Route parameters
  * @param {string} params.email - User email
  * @param {string} params.token - Access token
  * @param {Function} params.logout - Logout handler
  * @param {boolean} params.isLoggedIn - Whether user is logged in
- * @param {Array} params.notes - Array of user notes
  * @returns {Array} Route configuration array
  */
-export const createRoutes = ({ email, token, logout, isLoggedIn, notes }) => {
+export const createRoutes = ({ email, token, logout, isLoggedIn }) => {
     return [
         {
             element: <Layout email={email} logout={logout} token={token} />,
@@ -35,7 +34,7 @@ export const createRoutes = ({ email, token, logout, isLoggedIn, notes }) => {
                 {
                     path: "/Notes/:id",
                     element: (
-                        <ProtectedNoteRoute isLoggedIn={isLoggedIn} notes={notes}>
+                        <ProtectedNoteRoute isLoggedIn={isLoggedIn}>
                             <NoteView email={email} token={token} />
                         </ProtectedNoteRoute>
                     ),
@@ -43,7 +42,7 @@ export const createRoutes = ({ email, token, logout, isLoggedIn, notes }) => {
                 {
                     path: "/Notes/:id/edit",
                     element: (
-                        <ProtectedNoteRoute isLoggedIn={isLoggedIn} notes={notes}>
+                        <ProtectedNoteRoute isLoggedIn={isLoggedIn}>
                             <Edit email={email} token={token} />
                         </ProtectedNoteRoute>
                     ),

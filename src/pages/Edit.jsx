@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import { useAppSelector, useAppDispatch } from "../stores/hooks";
 import { saveNoteAsync, deleteNoteAsync } from "../stores/NotesSlice.ts";
@@ -15,6 +15,7 @@ const Edit = (props) => {
 
     // Get notes from Redux store
     const notes = useAppSelector((state) => state.notes.notes);
+    const loading = useAppSelector((state) => state.notes.loading);
     const currentNote = notes.find((note) => note.id === noteId);
 
     const [title, setTitle] = useState("");
@@ -26,6 +27,7 @@ const Edit = (props) => {
         hour: "numeric",
         minute: "numeric",
     }));
+
     // Initialize note data on mount
     useEffect(() => {
         if (currentNote) {
@@ -101,6 +103,20 @@ const Edit = (props) => {
         }
     }
 
+    // Show loading state while fetching notes (after all hooks)
+    if (loading) {
+        return (
+            <div id="body">
+                <div style={{ color: "var(--secondary-color)" }}>Loading note...</div>
+            </div>
+        );
+    }
+
+    // Check if note exists - redirect if not found (after all hooks)
+    if (!currentNote) {
+        return <Navigate to="/Notes" replace />;
+    }
+
     return (
         <div id="body">
             <span id="note-header">
@@ -117,6 +133,5 @@ const Edit = (props) => {
         </div>
     );
 }
-
 
 export default Edit;

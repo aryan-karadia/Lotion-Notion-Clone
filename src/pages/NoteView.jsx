@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../stores/hooks";
 import { deleteNoteAsync } from "../stores/NotesSlice.ts";
 import 'react-quill/dist/quill.bubble.css';
@@ -15,16 +15,15 @@ const NoteView = (props) => {
 
     // Get notes from Redux store
     const notes = useAppSelector((state) => state.notes.notes);
+    const loading = useAppSelector((state) => state.notes.loading);
     const currentNote = notes.find((note) => note.id === noteId);
     const [content, setContent] = useState("");
 
     useEffect(() => {
         if (currentNote) {
             setContent(currentNote.Content);
-        } else {
-            navigate("/Notes");
         }
-    }, [currentNote, navigate]);
+    }, [currentNote]);
 
     const editNote = () => {
         navigate(`/Notes/${noteId}/edit`);
@@ -50,25 +49,35 @@ const NoteView = (props) => {
         }
     }
 
+    // Show loading state while fetching notes (after all hooks)
+    if (loading) {
+        return (
+            <div id="body">
+                <div style={{ color: "var(--secondary-color)" }}>Loading note...</div>
+            </div>
+        );
+    }
+
+    // Check if note exists - redirect if not found (after all hooks)
+    if (!currentNote) {
+        return <Navigate to="/Notes" replace />;
+    }
+
     return (
         <div id="body">
-            {currentNote ? (
-                <div>
-                    <span id="note-header">
-                        <div>
-                            <h1 className="view-title">{currentNote.Title}</h1>
-                            <p style={{ color: "var(--secondary-color)" }}>{currentNote.when}</p>
-                        </div>
-                        <span>
-                            <span className="save-btn" onClick={editNote}>Edit</span>
-                            <span className="del-btn" onClick={Del}>Delete</span>
-                        </span>
+            <div>
+                <span id="note-header">
+                    <div>
+                        <h1 className="view-title">{currentNote.Title}</h1>
+                        <p style={{ color: "var(--secondary-color)" }}>{currentNote.when}</p>
+                    </div>
+                    <span>
+                        <span className="save-btn" onClick={editNote}>Edit</span>
+                        <span className="del-btn" onClick={Del}>Delete</span>
                     </span>
-                    <ReactQuill className="editor" value={content} readOnly={true} theme={"bubble"} />
-                </div>
-            ) : (
-                <div style={{ color: "var(--secondary-color)" }}>Loading...</div>
-            )}
+                </span>
+                <ReactQuill className="editor" value={content} readOnly={true} theme={"bubble"} />
+            </div>
         </div>
     );
 }
