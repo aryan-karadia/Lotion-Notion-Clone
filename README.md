@@ -1,6 +1,7 @@
 # Lotion Plus
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a4862368-865c-40a2-a74d-2c559df66683/deploy-status)](https://app.netlify.com/projects/lotionv2/deploys) \
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a4862368-865c-40a2-a74d-2c559df66683/deploy-status)](https://app.netlify.com/projects/lotionv2/deploys)
+![OAuth Status](https://img.shields.io/badge/OAuth-test%20mode-yellow)\
 **Live Demo:** [https://lotionv2.netlify.app](https://lotionv2.netlify.app) 
 
 A modern, cloud-native note-taking application built with React and AWS serverless architecture. This full-stack SPA reimagines Notion with a streamlined interface, featuring OAuth 2.0 authentication, real-time state management with Redux, and infrastructure-as-code deployment.
@@ -11,7 +12,7 @@ This application uses Google OAuth for authentication. Due to Google's verificat
 
 ### To Request Access:
 
-1. **Open an Issue**: [Create a new issue](https://github.com/YOUR_USERNAME/YOUR_REPO/issues/new) with the title "Request Test Access"
+1. **Open an Issue**: [Create a new issue](https://github.com/aryan-karadia/Lotion-Notion-Clone/issues/new) with the title "Request Test Access"
 2. **Provide Your Email**: Include the Google email address you want to use for testing
 3. **Purpose (Optional)**: Briefly mention why you're interested in testing (e.g., "Checking out your portfolio project")
 
