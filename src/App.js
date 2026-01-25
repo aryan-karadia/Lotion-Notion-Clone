@@ -69,7 +69,7 @@ function App() {
   return (
     <>
       {isLoggedIn ? (
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true }}>
           <Routes>
             <Route
               element={<Layout email={user.email} logout={handleLogout} token={accessToken} />}

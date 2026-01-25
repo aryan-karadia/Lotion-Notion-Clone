@@ -1,93 +1,63 @@
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../stores/hooks";
+import { deleteNoteAsync } from "../stores/NotesSlice.ts";
 import 'react-quill/dist/quill.bubble.css';
 
 const NoteView = (props) => {
     const email = props.email;
     const access_token = props.token;
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     let { id } = useParams();
-    const [note, setNote] = useState({id: `${id}`, Title: "", Content: "", when: ""});
+    const noteId = parseInt(id, 10);
+
+    // Get notes from Redux store
+    const notes = useAppSelector((state) => state.notes.notes);
+    const currentNote = notes.find((note) => note.id === noteId);
     const [content, setContent] = useState("");
-    
+
     useEffect(() => {
-        const getNotes = async () => {
-            const email = props.email;
-            const access_token = props.token;
-            const res = await fetch("https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "email": email,
-                    'Access-token': access_token
-                }
-            });
-            const notesArray = await res.json();
-            const notes = notesArray.notes;
-            const curNote = notes[id-1];
-            console.log(curNote);
-            if (curNote) {
-            setNote({...note, 
-                Title: curNote.Title,
-                Content: curNote.Content,
-                when: curNote.when
-            })
-            setContent(curNote.Content);
-            console.log(note);
-            console.log(content);
-            const curNoteTitle = document.querySelector(`#note-${id}`);
-            curNoteTitle.classList.add("active");
-            
+        if (currentNote) {
+            setContent(currentNote.Content);
         } else {
-            console.log("note not found")
             navigate("/Notes");
         }
-        }
-        getNotes();
-    }, []);
+    }, [currentNote, navigate]);
 
     const editNote = () => {
-        navigate(`/Notes/${id}/edit`);
+        navigate(`/Notes/${noteId}/edit`);
     }
 
     const Del = () => {
         const answer = window.confirm("Are you sure?");
         if (answer) {
-            deleteNote(id);
+            deleteNoteHandler();
         }
     }
 
-    const deleteNote = async (id) => {
-        const email = props.email;
-        const access_token = props.token;
-        const res = await fetch("https://4hzre52ywo56kfhpjxgtfggjpq0zfkln.lambda-url.ca-central-1.on.aws/", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                'email': email,
-                'Access-token': access_token
-            },
-            body: JSON.stringify({
-                id: id
-            })
-        });
-        const response = await res.json();
-        console.log(response);
-        id = id - 1;
-        const curNoteTitle = document.querySelector(`.active`);
-        curNoteTitle.remove();
-        navigate("/Notes");
+    const deleteNoteHandler = async () => {
+        try {
+            await dispatch(deleteNoteAsync({
+                noteId,
+                email,
+                token: access_token
+            })).unwrap();
+            navigate("/Notes");
+        } catch (error) {
+            console.error("Error deleting note:", error);
+        }
     }
 
     return (
         <div id="body">
-            {note && (
+            {currentNote ? (
                 <div>
                     <span id="note-header">
                         <div>
-                            <h1 className="view-title">{note.Title}</h1>
-                            <p style={{color: "var(--secondary-color)"}} >{note.when}</p>
+                            <h1 className="view-title">{currentNote.Title}</h1>
+                            <p style={{ color: "var(--secondary-color)" }}>{currentNote.when}</p>
                         </div>
                         <span>
                             <span className="save-btn" onClick={editNote}>Edit</span>
@@ -96,6 +66,8 @@ const NoteView = (props) => {
                     </span>
                     <ReactQuill className="editor" value={content} readOnly={true} theme={"bubble"} />
                 </div>
+            ) : (
+                <div style={{ color: "var(--secondary-color)" }}>Loading...</div>
             )}
         </div>
     );
