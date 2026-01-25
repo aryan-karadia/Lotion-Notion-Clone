@@ -4,10 +4,10 @@ import Layout from "./components/Layout";
 import Edit from "./pages/Edit";
 import NoteView from "./pages/NoteView";
 import { useState, useEffect } from "react";
-import { googleLogout, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./stores/hooks";
-import { setUser, clearUser } from "./stores/UserSlice.ts";
+import { setUser, logoutUser } from "./stores/UserSlice.ts";
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
@@ -58,13 +58,10 @@ function App() {
   }, [accessToken, dispatch]);
 
   const handleLogout = () => {
-    googleLogout();
-    // Clear Redux store (this also clears sessionStorage via the reducer)
-    dispatch(clearUser());
     // Clear access token
     setAccessToken(null);
-    sessionStorage.removeItem("access_token");
-    console.log("Logged out");
+    // Clear Redux store (this also clears sessionStorage via the reducer)
+    dispatch(logoutUser());
   };
 
   return (

@@ -1,4 +1,5 @@
 
+import { googleLogout } from "@react-oauth/google";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -24,15 +25,19 @@ export const userSlice = createSlice({
             // update session storage
             sessionStorage.setItem("user", JSON.stringify({ email: state.email, name: state.name }));
         },
-        clearUser(state) {
-            state.email = null;
-            state.name = null;
-            // clear session storage
-            sessionStorage.removeItem("user");
+        logoutUser(state) {
+                googleLogout();
+                state.email = null;
+                state.name = null;
+                // clear session storage
+                sessionStorage.removeItem("user");
+                // Clear access token            
+                sessionStorage.removeItem("access_token");
+                console.log("Logged out");
         },
     },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;
