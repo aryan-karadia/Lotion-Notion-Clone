@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../stores/hooks";
-import { fetchNotes } from "../stores/NotesSlice.ts";
+import { createNoteFrontend, fetchNotes } from "../stores/NotesSlice.ts";
 import UserProfile from "./UserProfile";
 import Sidebar from "./Sidebar";
 
@@ -22,12 +22,15 @@ const Layout = (props) => {
         navigate(`/Notes/${noteId}`);
     }
 
-    const newNote = () => {
+    const newNote = async () => {
         console.log("Creating new note");
-        // Generate a new ID (in a real app, this would come from the backend)
-        const newId = notes.length > 0 ? Math.max(...notes.map(n => n.id)) + 1 : 1;
-        setActiveNoteId(newId);
-        navigate(`/Notes/${newId}/edit`);
+        try {
+            const newNoteData = await dispatch(createNoteFrontend({ email: props.email })).unwrap();
+            setActiveNoteId(newNoteData.id);
+            navigate(`/Notes/${newNoteData.id}/edit`);
+        } catch (error) {
+            console.error("Error creating new note:", error);
+        }
     }
 
     const toggleMenu = () => {

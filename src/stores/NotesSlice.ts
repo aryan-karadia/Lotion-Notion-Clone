@@ -14,6 +14,7 @@ export interface NotesState {
   count: number;
   loading: boolean;
   error: string | null;
+  nextId?: number;
 }
 
 const initialState: NotesState = {
@@ -61,9 +62,20 @@ export const fetchNotes = createAsyncThunk(
 
       console.log("Fetched notes:", parsedNotes);
 
+      // find next Id
+      let maxId = 0;
+        parsedNotes.forEach((note: Note) => {
+            if (note.id > maxId) {
+                maxId = note.id;
+            }
+        });
+        const nextId = maxId + 1;
+        console.log("Next note ID:", nextId);
+
       return {
         notes: parsedNotes,
         count: data.count || parsedNotes.length,
+        nextId: nextId,
       };
     } catch (error: any) {
         console.error("Error fetching notes:", error);
@@ -90,7 +102,7 @@ export const deleteNoteAsync = createAsyncThunk(
             "Access-token": token,
           },
           body: JSON.stringify({
-            id: noteId,
+            id: String(noteId),  // Convert ID to string for backend
           }),
         }
       );
@@ -106,6 +118,28 @@ export const deleteNoteAsync = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
+  }
+);
+
+// Async thunk for creating a new note on frontend only
+export const createNoteFrontend = createAsyncThunk(
+  'notes/createNoteFrontend',
+  async (
+    { email }: { email: string },
+    { getState }
+  ) => {
+    const state = getState() as { notes: NotesState };
+    const nextId = state.notes.nextId || 1;
+
+    const newNote: Note = {
+      Content: "",
+      Title: "New Note",
+      email: email,
+      when: new Date().toLocaleString(),
+      id: nextId,
+    };
+
+    return newNote;
   }
 );
 
@@ -126,7 +160,11 @@ export const saveNoteAsync = createAsyncThunk(
             email: email,
             "Access-token": token,
           },
-          body: JSON.stringify({ ...note, email: email }),
+          body: JSON.stringify({ 
+            ...note, 
+            email: email,
+            id: String(note.id)  // Convert ID to string for backend
+          }),
         }
       );
 
@@ -181,6 +219,7 @@ export const notesSlice = createSlice({
         state.loading = false;
         state.notes = action.payload.notes;
         state.count = action.payload.count;
+        state.nextId = action.payload.nextId;
       })
       .addCase(fetchNotes.rejected, (state, action) => {
         state.loading = false;
@@ -218,6 +257,13 @@ export const notesSlice = createSlice({
       .addCase(deleteNoteAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(createNoteFrontend.fulfilled, (state, action) => {
+        // Add new note to frontend store
+        state.notes.push(action.payload);
+        state.count += 1;
+        // Increment nextId for future notes
+        state.nextId = (state.nextId || 1) + 1;
       });
   },
 });
