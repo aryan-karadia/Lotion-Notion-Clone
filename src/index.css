@@ -465,6 +465,8 @@ header div {
 }
 
 .login-button {
+  display: block;
+  margin: 0 auto;
   padding: 20px 40px;
   border-color: white;
   border-radius: 6px;
