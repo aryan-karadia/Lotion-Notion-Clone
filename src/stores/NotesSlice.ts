@@ -1,5 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createNotesApi } from "../api/notesApi.ts";
+import { getGuestNotesStorage } from "../guest/session/index.ts";
 
 export interface Note {
   Content: string;
@@ -17,6 +19,21 @@ export interface NotesState {
   nextId?: number;
 }
 
+type SessionArgs = {
+  email: string;
+  token?: string;
+  mode?: "google" | "guest";
+};
+
+const getSession = ({ email, token, mode }: SessionArgs) => {
+  const sessionMode = mode ?? (token ? "google" : "guest");
+  return {
+    mode: sessionMode,
+    email,
+    ...(sessionMode === "google" && token ? { token } : {}),
+  } as const;
+};
+
 const initialState: NotesState = {
   notes: [],
   count: 0,
@@ -28,35 +45,18 @@ const initialState: NotesState = {
 export const fetchNotes = createAsyncThunk(
   'notes/fetchNotes',
   async (
-    { email, token }: { email: string; token: string },
-    { rejectWithValue }
+    { email, token, mode }: SessionArgs,
+    { rejectWithValue, getState }
   ) => {
     try {
-      const res = await fetch(
-        "https://oeurpvedfschzmurcc5abpypcq0jdtbn.lambda-url.ca-central-1.on.aws/",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            email: email,
-            "Access-token": token,
-          },
-        }
-      );
-      
-      if (!res.ok) {
-        throw new Error('Failed to fetch notes');
-      }
-
-      const data = await res.json();
-      
-      // Extract notes array from response
-      const notesArray = Array.isArray(data.notes) ? data.notes : [];
-      
-      // Convert note IDs to numbers and parse dates
-      const parsedNotes = notesArray.map((note: any) => ({
+      const session = getSession({
+        email,
+        token,
+        mode: mode ?? (getState() as { user?: { mode?: "google" | "guest" } }).user?.mode,
+      });
+      const result = await createNotesApi(session, getGuestNotesStorage()).getNotes(session);
+      const parsedNotes = result.notes.map((note) => ({
         ...note,
-        id: typeof note.id === 'string' ? parseInt(note.id, 10) : note.id,
         when: typeof note.when === 'string' ? note.when : new Date(note.when).toLocaleString(),
       }));
 
@@ -74,7 +74,7 @@ export const fetchNotes = createAsyncThunk(
 
       return {
         notes: parsedNotes,
-        count: data.count || parsedNotes.length,
+        count: result.count || parsedNotes.length,
         nextId: nextId,
       };
     } catch (error: any) {
@@ -88,33 +88,16 @@ export const fetchNotes = createAsyncThunk(
 export const deleteNoteAsync = createAsyncThunk(
   'notes/deleteNote',
   async (
-    { noteId, email, token }: { noteId: number; email: string; token: string },
-    { rejectWithValue }
+    { noteId, email, token, mode }: { noteId: number } & SessionArgs,
+    { rejectWithValue, getState }
   ) => {
     try {
-      const res = await fetch(
-        "https://4hzre52ywo56kfhpjxgtfggjpq0zfkln.lambda-url.ca-central-1.on.aws/",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            email: email,
-            "Access-token": token,
-          },
-          body: JSON.stringify({
-            id: String(noteId),  // Convert ID to string for backend
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error('Failed to delete note');
-      }
-
-      const response = await res.json();
-      console.log("Note deleted:", response);
-
-      return noteId;
+      const session = getSession({
+        email,
+        token,
+        mode: mode ?? (getState() as { user?: { mode?: "google" | "guest" } }).user?.mode,
+      });
+      return await createNotesApi(session, getGuestNotesStorage()).deleteNote(session, noteId);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -147,35 +130,16 @@ export const createNoteFrontend = createAsyncThunk(
 export const saveNoteAsync = createAsyncThunk(
   'notes/saveNote',
   async (
-    { note, email, token }: { note: Note; email: string; token: string },
-    { rejectWithValue }
+    { note, email, token, mode }: { note: Note } & SessionArgs,
+    { rejectWithValue, getState }
   ) => {
     try {
-      const res = await fetch(
-        "https://oxvt53qsm3qxtxctk3qo5rmed40efknj.lambda-url.ca-central-1.on.aws/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            email: email,
-            "Access-token": token,
-          },
-          body: JSON.stringify({ 
-            ...note, 
-            email: email,
-            id: String(note.id)  // Convert ID to string for backend
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error('Failed to save note');
-      }
-
-      const response = await res.json();
-      console.log("Note saved:", response);
-
-      return note;
+      const session = getSession({
+        email,
+        token,
+        mode: mode ?? (getState() as { user?: { mode?: "google" | "guest" } }).user?.mode,
+      });
+      return await createNotesApi(session, getGuestNotesStorage()).saveNote(session, note);
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

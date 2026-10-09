@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../stores/hooks";
 import { createNoteFrontend, fetchNotes } from "../stores/NotesSlice.ts";
 import UserProfile from "./UserProfile";
 import Sidebar from "./Sidebar";
+import GuestBanner from "./guest/GuestBanner";
 
 const Layout = (props) => {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Layout = (props) => {
     useEffect(() => {
         const loadNotes = async () => {
             try {
-                await dispatch(fetchNotes({ email: props.email, token: props.token })).unwrap();
+                await dispatch(fetchNotes({ email: props.email, token: props.token, mode: props.mode })).unwrap();
             } catch (error) {
                 console.error("Error fetching notes:", error);
             } finally {
@@ -27,7 +28,7 @@ const Layout = (props) => {
         };
 
         loadNotes();
-    }, [dispatch, props.email, props.token]);
+    }, [dispatch, props.email, props.token, props.mode]);
 
     const navigateToNote = (noteId) => {
         setActiveNoteId(noteId);
@@ -75,6 +76,9 @@ const Layout = (props) => {
 
     return (
         <>
+            {props.mode === "guest" && (
+                <GuestBanner onExit={props.logout} onReset={props.onResetGuest} />
+            )}
             <header>
                 <span className="menu-toggle" onClick={toggleMenu}>&#9776;</span>
                 <div className="header-text">

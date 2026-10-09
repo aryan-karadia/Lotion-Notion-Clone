@@ -14,7 +14,7 @@ import { ProtectedRoute, ProtectedNoteRoute } from "./ProtectedRoutes";
  * @param {boolean} params.isLoggedIn - Whether user is logged in
  * @returns {Array} Route configuration array
  */
-export const createRoutes = ({ email, token, logout, isLoggedIn }) => {
+export const createRoutes = ({ email, token, mode, logout, isLoggedIn }) => {
     return [
         {
             element: <Layout email={email} logout={logout} token={token} />,
@@ -26,7 +26,7 @@ export const createRoutes = ({ email, token, logout, isLoggedIn }) => {
                 {
                     path: "/Notes",
                     element: (
-                        <ProtectedRoute isLoggedIn={isLoggedIn}>
+                        <ProtectedRoute isLoggedIn={isLoggedIn} mode={mode} email={email}>
                             <Notes />
                         </ProtectedRoute>
                     ),
@@ -34,7 +34,7 @@ export const createRoutes = ({ email, token, logout, isLoggedIn }) => {
                 {
                     path: "/Notes/:id",
                     element: (
-                        <ProtectedNoteRoute isLoggedIn={isLoggedIn}>
+                        <ProtectedNoteRoute isLoggedIn={isLoggedIn} mode={mode} email={email}>
                             <NoteView email={email} token={token} />
                         </ProtectedNoteRoute>
                     ),
@@ -42,7 +42,7 @@ export const createRoutes = ({ email, token, logout, isLoggedIn }) => {
                 {
                     path: "/Notes/:id/edit",
                     element: (
-                        <ProtectedNoteRoute isLoggedIn={isLoggedIn}>
+                        <ProtectedNoteRoute isLoggedIn={isLoggedIn} mode={mode} email={email}>
                             <Edit email={email} token={token} />
                         </ProtectedNoteRoute>
                     ),
