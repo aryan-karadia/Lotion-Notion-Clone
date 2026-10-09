@@ -51,6 +51,13 @@ a {
   font-size: .78rem;
 }
 
+.login-unavailable {
+  margin: 0 0 16px;
+  color: var(--secondary-color);
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
 .guest-login-button,
 .guest-banner-button {
   border: 1px solid #9aa6ad;
