@@ -1,9 +1,9 @@
 # Lotion Plus
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a4862368-865c-40a2-a74d-2c559df66683/deploy-status)](https://app.netlify.com/projects/lotionv2/deploys)
-[![OAuth Status](https://img.shields.io/badge/OAuth-test%20mode-yellow)](https://github.com/aryan-karadia/Lotion-Notion-Clone)
+[![Access](https://img.shields.io/badge/access-public-brightgreen)](https://lotionv2.netlify.app)
 
-> **Try as guest, no login.** Open the [live demo](https://lotionv2.netlify.app) and choose **Try the demo as a guest** to create, edit, and delete notes immediately.
+> **Public demo, no login required.** Open the [live demo](https://lotionv2.netlify.app) and choose **Try the demo as a guest** to create, edit, and delete notes immediately.
 
 **Live Demo:** [https://lotionv2.netlify.app](https://lotionv2.netlify.app)
 
@@ -11,21 +11,13 @@ A modern, cloud-native note-taking application built with React and AWS serverle
 
 ## Try it
 
-Guest mode needs no Google account or approval. Guest notes are stored in this browser only; they are not sent to the Lambda/DynamoDB backend and are cleared when you leave guest mode or start a fresh guest session.
+The public guest mode needs no Google account, approval, or setup. Guest notes are stored in this browser only; they are not sent to the Lambda/DynamoDB backend and are cleared when you leave guest mode or start a fresh guest session.
 
-For the full cloud-backed experience, choose **Sign in with Google**. Google OAuth is currently in testing mode with limited access.
-
-### To request authenticated test access
-
-1. [Create an issue](https://github.com/aryan-karadia/Lotion-Notion-Clone/issues/new) titled **Request Test Access**.
-2. Include the Google email address you want to use.
-3. Optionally mention your testing purpose.
-
-Approved testers are typically added within 24–48 hours.
+For the full cloud-backed experience, choose **Sign in with Google**. Google OAuth remains an optional authenticated path; guest mode is available publicly without it.
 
 > **Note:** This is a portfolio/demo project. For a production-ready note-taking app, use [Notion](https://notion.so) or a similar established service.
 
-See [Guest Mode Architecture](docs/guest-mode/ARCHITECTURE.md) for the isolation boundary, storage schema, and a short demo script. Recruiters can use guest mode immediately or review the source and architecture documentation without requesting access.
+See [Guest Mode Architecture](docs/guest-mode/ARCHITECTURE.md) for the isolation boundary, storage schema, and a short demo script. Anyone can try the app immediately or review the source and architecture documentation.
 
 
 
