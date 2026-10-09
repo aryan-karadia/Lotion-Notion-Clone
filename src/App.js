@@ -143,6 +143,13 @@ function App() {
           </header>
           <div id="login-body">
             <div className="login">
+              <section className="login-description">
+                <p>
+                  Lotion Plus is a serverless, Notion-style notes app built with React,
+                  AWS Lambda, and DynamoDB. Create, edit, and organize notes with Google
+                  sign-in, or try the browser-only guest demo without an account.
+                </p>
+              </section>
               {process.env.REACT_APP_GOOGLE_CLIENT_ID ? (
                 <GoogleLoginButton onSuccess={handleGoogleLogin} />
               ) : (
@@ -153,6 +160,9 @@ function App() {
               <GuestLoginButton />
             </div>
           </div>
+          <footer className="login-footer">
+            <a href="/privacy.html">Privacy Policy</a>
+          </footer>
         </div>
       )}
     </>

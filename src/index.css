@@ -450,6 +450,18 @@ header div {
 
 .login {
   place-self: center;
+  width: min(100% - 32px, 360px);
+}
+
+.login-description {
+  margin-bottom: 24px;
+  color: var(--primary-color);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.login-description p {
+  margin: 0;
 }
 
 .login-button {
@@ -475,6 +487,18 @@ header div {
 #login-body {
   display: grid;
   flex: 1 1 auto;
+}
+
+.login-footer {
+  padding: 16px;
+  border-top: 1px solid var(--accent-col);
+  color: var(--secondary-color);
+  font-size: .85rem;
+  text-align: center;
+}
+
+.login-footer a {
+  text-decoration: underline;
 }
 
 .user-avatar {
