@@ -30,6 +30,8 @@ function App() {
 
   useEffect(() => {
     const beginGuest = () => {
+      sessionStorage.removeItem("access_token");
+      setAccessToken(null);
       startGuestSession({ storage: getGuestNotesStorage(), fresh: true });
       ensureGuestSeeded();
       dispatch(setGuestUser({ email: "guest@lotion.local" }));
@@ -50,15 +52,17 @@ function App() {
 
   // Load access token from session storage on mount
   useEffect(() => {
-    const storedToken = sessionStorage.getItem("access_token");
+    const storedToken = isGuest ? null : sessionStorage.getItem("access_token");
     if (storedToken) {
       setAccessToken(storedToken);
+    } else if (isGuest) {
+      setAccessToken(null);
     }
-  }, []);
+  }, [isGuest]);
 
   // Fetch user profile when access token is available
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken && !isGuest) {
       axios
         .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`, {
           headers: {
@@ -75,7 +79,7 @@ function App() {
         })
         .catch((err) => console.log(err));
     }
-  }, [accessToken, dispatch]);
+  }, [accessToken, dispatch, isGuest]);
 
   const handleLogout = () => {
     // Clear access token

@@ -1,32 +1,31 @@
 # Lotion Plus
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a4862368-865c-40a2-a74d-2c559df66683/deploy-status)](https://app.netlify.com/projects/lotionv2/deploys)
-![OAuth Status](https://img.shields.io/badge/OAuth-test%20mode-yellow)\
-**Live Demo:** [https://lotionv2.netlify.app](https://lotionv2.netlify.app) 
+[![OAuth Status](https://img.shields.io/badge/OAuth-test%20mode-yellow)](https://github.com/aryan-karadia/Lotion-Notion-Clone)
+
+> **Try as guest, no login.** Open the [live demo](https://lotionv2.netlify.app) and choose **Try the demo as a guest** to create, edit, and delete notes immediately.
+
+**Live Demo:** [https://lotionv2.netlify.app](https://lotionv2.netlify.app)
 
 A modern, cloud-native note-taking application built with React and AWS serverless architecture. This full-stack SPA reimagines Notion with a streamlined interface, featuring OAuth 2.0 authentication, real-time state management with Redux, and infrastructure-as-code deployment.
 
-## Requesting Test Access
+## Try it
 
-This application uses Google OAuth for authentication. Due to Google's verification requirements, the app is currently in testing mode with limited access.
+Guest mode needs no Google account or approval. Guest notes are stored in this browser only; they are not sent to the Lambda/DynamoDB backend and are cleared when you leave guest mode or start a fresh guest session.
 
-### To Request Access:
+For the full cloud-backed experience, choose **Sign in with Google**. Google OAuth is currently in testing mode with limited access.
 
-1. **Open an Issue**: [Create a new issue](https://github.com/aryan-karadia/Lotion-Notion-Clone/issues/new) with the title "Request Test Access"
-2. **Provide Your Email**: Include the Google email address you want to use for testing
-3. **Purpose (Optional)**: Briefly mention why you're interested in testing (e.g., "Checking out your portfolio project")
+### To request authenticated test access
 
-I'll add your email to the approved test users list within 24-48 hours and notify you when access is granted.
+1. [Create an issue](https://github.com/aryan-karadia/Lotion-Notion-Clone/issues/new) titled **Request Test Access**.
+2. Include the Google email address you want to use.
+3. Optionally mention your testing purpose.
 
-**Note**: This is a portfolio/demo project. For a production-ready note-taking app, please use [Notion](https://notion.so) or similar established services.
+Approved testers are typically added within 24–48 hours.
 
-### Current Test Users
-Access is currently limited to approved testers. If you encounter an "Access blocked" error, please request access using the steps above.
+> **Note:** This is a portfolio/demo project. For a production-ready note-taking app, use [Notion](https://notion.so) or a similar established service.
 
-### For Recruiters/Employers
-If you're reviewing this project as part of a job application and would like to test the live demo, please either:
-- Request access using the method above, or
-- Review the source code and architecture documentation to understand the implementation
+See [Guest Mode Architecture](docs/guest-mode/ARCHITECTURE.md) for the isolation boundary, storage schema, and a short demo script. Recruiters can use guest mode immediately or review the source and architecture documentation without requesting access.
 
 
 
@@ -40,6 +39,7 @@ If you're reviewing this project as part of a job application and would like to 
 - **Protected Routing**: Route guards with React Router v6 for secure navigation and access control
 - **Responsive Design**: Mobile-first UI with CSS custom properties for theming
 - **Continuous Deployment**: Automated CI/CD pipeline via Netlify for zero-downtime deployments
+- **Guest Mode**: Browser-local CRUD demo that works without OAuth or backend access
 
 ## Tech Stack
 
@@ -114,6 +114,8 @@ This composite key design enables efficient querying of all notes per user while
 3. Requests sent to Lambda Function URLs with authentication headers
 4. Lambda functions validate tokens and interact with DynamoDB
 5. Responses update Redux store triggering UI re-render
+
+Guest mode keeps the same NotesApi contract but never calls a Lambda URL. Its in-process, Lambda-shaped handlers validate a guest session and read/write a versioned browser store, allowing the product flow to be demonstrated without credentials. See the [guest-mode architecture](docs/guest-mode/ARCHITECTURE.md) for details.
 
 ## Key Technical Implementations
 
