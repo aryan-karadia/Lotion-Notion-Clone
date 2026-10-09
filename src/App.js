@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { useAppDispatch, useAppSelector } from "./stores/hooks";
-import { setUser, logoutUser } from "./stores/UserSlice.ts";
+import { setUser, setGuestUser, logoutUser, logoutGuest } from "./stores/UserSlice.ts";
+import { startGuestSession, endGuestSession, getGuestNotesStorage, setGuestNotesStorage } from "./guest/session/index.ts";
+import { ensureGuestSeeded, guestNotesStorage, resetGuestDemoData } from "./components/guest/guestStorage.ts";
 import { ProtectedRoute, ProtectedNoteRoute } from "./routes/ProtectedRoutes";
 import Layout from "./components/Layout";
 import Notes from "./pages/Notes";
 import Edit from "./pages/Edit";
 import NoteView from "./pages/NoteView";
+import GuestLoginButton from "./components/guest/GuestLoginButton";
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
@@ -18,6 +21,22 @@ function App() {
   const user = useAppSelector((state) => state.user);
   const notes = useAppSelector((state) => state.notes.notes);
   const isLoggedIn = user.email !== null;
+  const isGuest = user.mode === "guest";
+
+  useEffect(() => {
+    setGuestNotesStorage(guestNotesStorage);
+    if (isGuest) ensureGuestSeeded();
+  }, [isGuest]);
+
+  useEffect(() => {
+    const beginGuest = () => {
+      startGuestSession({ storage: getGuestNotesStorage(), fresh: true });
+      ensureGuestSeeded();
+      dispatch(setGuestUser({ email: "guest@lotion.local" }));
+    };
+    window.addEventListener("lotion:guest-login", beginGuest);
+    return () => window.removeEventListener("lotion:guest-login", beginGuest);
+  }, [dispatch]);
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
@@ -26,7 +45,6 @@ function App() {
       sessionStorage.setItem("access_token", codeResponse.access_token);
     },
     onError: (error) => console.log("Login Failed:", error),
-    scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
     redirectUri: process.env.REACT_APP_REDIRECT_URI,
   });
 
@@ -63,7 +81,17 @@ function App() {
     // Clear access token
     setAccessToken(null);
     // Clear Redux store (this also clears sessionStorage via the reducer)
-    dispatch(logoutUser());
+    if (isGuest) {
+      endGuestSession(getGuestNotesStorage(), { wipe: true });
+      dispatch(logoutGuest());
+    } else {
+      dispatch(logoutUser());
+    }
+  };
+
+  const handleResetGuest = () => {
+    resetGuestDemoData();
+    window.location.reload();
   };
 
   return (
@@ -72,7 +100,8 @@ function App() {
         <BrowserRouter future={{ v7_startTransition: true }}>
           <Routes>
             <Route
-              element={<Layout email={user.email} logout={handleLogout} token={accessToken} />}
+              element={              <Layout email={user.email} logout={handleLogout} token={accessToken} mode={user.mode}
+                onResetGuest={handleResetGuest} />}
             >
               <Route path="/" element={<Navigate to="/Notes" />} />
               <Route
@@ -133,6 +162,7 @@ function App() {
                   />
                 </svg>
               </button>
+              <GuestLoginButton />
             </div>
           </div>
         </div>
